@@ -30,5 +30,7 @@ int wmain()
 	results = _setmode(_fileno(stdin), _O_U16TEXT);
 	results = _setmode(_fileno(stderr), _O_U16TEXT);
 
+	
+
 	return 0;
 }
