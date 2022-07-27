@@ -14,8 +14,8 @@ public:
 	virtual wstring getParent() const { return fPath.parent_path(); }
 	virtual wstring getSize() const;
 	virtual uintmax_t getSizeByte() const = 0;
-	virtual bool isDir() const = 0;
-	virtual bool isFile() const = 0;
+	virtual bool isDir() const { return false; }
+	virtual bool isFile() const { return false; }
 	virtual vector<Path*>* open() = 0;
 };
 
@@ -35,11 +35,7 @@ inline wstring Path::getSize() const
 	return wstring(to_wstring(fsize) + vals[i]);
 }
 
-class Root : public Path
-{
-public:
-
-};
+//------------------------------PARTITION----------------------------------------------------------
 
 class Partition : public Path
 {
@@ -49,21 +45,118 @@ private:
 public:
 	explicit Partition(wstring fPathP, wstring labelP) : Path{ fPathP }, label{ labelP } {}
 	explicit Partition(wstring fPathP) : Partition{ fPathP, L"Local Disk" } {}
-	explicit Partition() : Partition{ L"", L"Local Disk"} {}
+	explicit Partition() : Partition{ L"", L"Local Disk" } {}
 
 	wstring getName() const override;
 	//wstring getPath() const override { return L""; }
 	wstring getParent() const override { return L""; }
 	wstring getSize() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
-	bool isDir() const override { return false; }
-	bool isFile() const override { return false; }
+
+	vector<Path*>* open() override;
 };
 
 wstring Partition::getName() const
 {
-	return L"Local Disk";
+	return label;
 }
+
+//inline vector<Path*>* Partition::open()
+//{
+//	vector<Path*> buffer;
+//	buffer.push_back(new Root);
+//
+//	return &buffer;
+//}
+
+//------------------------------ROOT---------------------------------------------------------------
+
+class Root : public Path
+{
+public:
+	Root() : Path{ L"" } {}
+
+	wstring getName() const override { return L""; }
+	wstring getPath() const override { return L""; }
+	wstring getParent() const override { return L""; }
+	wstring getSize() const override { return L""; }
+	uintmax_t getSizeByte() const override { return 0ull; }
+
+	vector<Path*>* open() override;
+};
+
+inline vector<Path*>* Root::open()
+{
+	vector<Path*>* buffer = new vector<Path*>;
+
+	int n;
+	// функция возвращает битовую маску
+	DWORD drives = GetLogicalDrives();
+
+	// прогоняем по битам
+	for (int x = 0; x < 26; x++)
+	{
+		// определяем значение текущего бита
+		n = ((drives >> x) & 1);
+
+		// если единица - диск с номером x есть
+		if (n)
+		{
+			wstring partitionPath, label;
+			label += L"Local Disk ";
+			label += (wchar_t)(65 + x);
+
+			partitionPath += (wchar_t)(65 + x);
+			partitionPath += L":\\";
+			//buffer->push_back
+			buffer->push_back(new Partition{ partitionPath, label });
+		}
+	}
+
+	return buffer;
+}
+inline vector<Path*>* Partition::open()
+{
+	vector<Path*> buffer;
+	buffer.push_back(new Root);
+
+	return &buffer;
+}
+////------------------------------PARTITION----------------------------------------------------------
+//
+//class Partition : public Path
+//{
+//private:
+//	wstring label;
+//
+//public:
+//	explicit Partition(wstring fPathP, wstring labelP) : Path{ fPathP }, label{ labelP } {}
+//	explicit Partition(wstring fPathP) : Partition{ fPathP, L"Local Disk" } {}
+//	explicit Partition() : Partition{ L"", L"Local Disk"} {}
+//
+//	wstring getName() const override;
+//	//wstring getPath() const override { return L""; }
+//	wstring getParent() const override { return L""; }
+//	wstring getSize() const override { return L""; }
+//	uintmax_t getSizeByte() const override { return 0ull; }
+//
+//	vector<Path*>* open() override;
+//};
+//
+//wstring Partition::getName() const
+//{
+//	return label;
+//}
+//
+//inline vector<Path*>* Partition::open()
+//{
+//	vector<Path*> buffer;
+//	buffer.push_back(new Root);
+//	
+//	return &buffer;
+//}
+
+//------------------------------DIRECTORY----------------------------------------------------------
 
 class Directory : public Path
 {
@@ -73,7 +166,8 @@ public:
 
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
-	bool isFile() const override { return false; }
+
+	vector<Path*>* open() override;
 };
 
 uintmax_t Directory::getSizeByte() const
@@ -104,6 +198,16 @@ uintmax_t Directory::getSizeByte() const
 	return fsizeb;
 }
 
+inline vector<Path*>* Directory::open()
+{
+	vector<Path*> buffer;
+	buffer.push_back(new Directory{ this->fPath });
+
+	return &buffer;
+}
+
+//------------------------------FILE---------------------------------------------------------------
+
 class File : public Path
 {
 public:
@@ -111,6 +215,13 @@ public:
 	explicit File() : File{ L"" } {}
 	
 	uintmax_t getSizeByte() const override { return file_size(this->fPath); }
-	bool isDir() const override { return false; }
 	bool isFile() const override { return true; }
+
+	vector<Path*>* open() override;
 };
+
+vector<Path*>* File::open()
+{
+	ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
+	return nullptr;
+}

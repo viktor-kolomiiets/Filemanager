@@ -14,6 +14,7 @@
 #include <io.h>
 #include <string>
 
+#include <Windows.h>
 #include <filesystem>
 
 using namespace std;
@@ -30,7 +31,13 @@ int wmain()
 	results = _setmode(_fileno(stdin), _O_U16TEXT);
 	results = _setmode(_fileno(stderr), _O_U16TEXT);
 
-	
+	Root root;
+	vector<Path*>* list = root.open();
+	size_t s = list->size();
+	for (size_t i = 0; i < s; i++)
+	{
+		wcout << list->at(i)->getName() << L"\n";
+	}
 
 	return 0;
 }
