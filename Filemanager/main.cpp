@@ -32,11 +32,19 @@ int wmain()
 	results = _setmode(_fileno(stderr), _O_U16TEXT);
 
 	Root root;
-	vector<Path*>* list = root.open();
+	/*vector<Path*>* list = root.open();
 	size_t s = list->size();
 	for (size_t i = 0; i < s; i++)
 	{
 		wcout << list->at(i)->getName() << L"\n";
+	}*/
+
+	vector<Path*> files;
+	root.openFile(files);
+	size_t f = files.size();
+	for (size_t i = 0; i < f; i++)
+	{
+		wcout << files.at(i)->getName() << L"\n";
 	}
 
 	return 0;

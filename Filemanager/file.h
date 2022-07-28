@@ -17,6 +17,7 @@ public:
 	virtual bool isDir() const { return false; }
 	virtual bool isFile() const { return false; }
 	virtual vector<Path*>* open() = 0;
+	virtual void openFile(vector<Path*>& list) = 0;
 };
 
 inline wstring Path::getSize() const
@@ -49,6 +50,7 @@ public:
 	uintmax_t getSizeByte() const override { return 0ull; }
 
 	vector<Path*>* open() override;
+	void openFile(vector<Path*>& list) override;
 };
 
 //------------------------------PARTITION----------------------------------------------------------
@@ -70,6 +72,7 @@ public:
 	uintmax_t getSizeByte() const override { return 0ull; }
 
 	vector<Path*>* open() override;
+	void openFile(vector<Path*>& list) override;
 };
 
 //------------------------------DIRECTORY----------------------------------------------------------
@@ -84,6 +87,7 @@ public:
 	bool isDir() const override { return true; }
 
 	vector<Path*>* open() override;
+	void openFile(vector<Path*>& list) override;
 };
 
 //------------------------------FILE---------------------------------------------------------------
@@ -98,6 +102,7 @@ public:
 	bool isFile() const override { return true; }
 
 	vector<Path*>* open() override;
+	void openFile(vector<Path*>& list) override;
 };
 
 //------------------------------ROOT---------------------------------------------------------------
@@ -133,6 +138,34 @@ inline vector<Path*>* Root::open()
 	return buffer;
 }
 
+inline void Root::openFile(vector<Path*>& list)
+{
+	list.clear();
+
+	int n;
+	// функция возвращает битовую маску
+	DWORD drives = GetLogicalDrives();
+
+	// прогоняем по битам
+	for (int x = 0; x < 26; x++)
+	{
+		// определяем значение текущего бита
+		n = ((drives >> x) & 1);
+
+		// если единица - диск с номером x есть
+		if (n)
+		{
+			wstring partitionPath, label;
+			label += L"Local Disk ";
+			label += (wchar_t)(65 + x);
+
+			partitionPath += (wchar_t)(65 + x);
+			partitionPath += L":\\";
+			list.push_back(new Partition{ partitionPath, label });
+		}
+	}
+}
+
 //------------------------------PARTITION----------------------------------------------------------
 
 wstring Partition::getName() const
@@ -146,6 +179,11 @@ inline vector<Path*>* Partition::open()
 	buffer.push_back(new Root);
 
 	return &buffer;
+}
+
+inline void Partition::openFile(vector<Path*>& list)
+{
+
 }
 
 //------------------------------DIRECTORY----------------------------------------------------------
@@ -186,10 +224,20 @@ inline vector<Path*>* Directory::open()
 	return &buffer;
 }
 
+inline void Directory::openFile(vector<Path*>& list)
+{
+
+}
+
 //------------------------------FILE---------------------------------------------------------------
 
 vector<Path*>* File::open()
 {
 	ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
 	return nullptr;
+}
+
+inline void File::openFile(vector<Path*>& list)
+{
+	ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
 }
