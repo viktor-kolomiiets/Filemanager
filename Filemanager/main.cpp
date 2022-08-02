@@ -20,7 +20,26 @@
 using namespace std;
 using namespace std::filesystem;
 
+#define OPEN_BTN L'o'
+#define NEW_FILE_BTN L'a'
+#define NEW_FOLDER_BTN L'n'
+#define DELETE_BTN L'x'
+#define RENAME_BTN L'r'
+#define COPY_BTN L'c'
+#define MOVE_BTN L'm'
+#define INFO_BTN L'i'
+#define FIND_BTN L'f'
+#define NEXT_BTN L'\t'
+#define PREV_BTN L' '
+#define PARTITION_BTN L'p'
+
+#define FILE_CLR 14
+#define DIRECTORY_CLR 2
+#define DEFAULT_CLR 15
+
 #include "file.h"
+#include "commands.h"
+#include "app.h"
 
 int wmain()
 {
@@ -31,21 +50,74 @@ int wmain()
 	results = _setmode(_fileno(stdin), _O_U16TEXT);
 	results = _setmode(_fileno(stderr), _O_U16TEXT);
 
-	Root root;
-	/*vector<Path*>* list = root.open();
-	size_t s = list->size();
-	for (size_t i = 0; i < s; i++)
-	{
-		wcout << list->at(i)->getName() << L"\n";
-	}*/
+	//o - open
+	//a - create file
+	//n - create folder
+	//x - delete
+	//r - rename
+	//c - copy
+	//m - move
+	//i - info
+	//f - find
+	//tab - next page
+	//space - prev page
+	//p - change partition
 
-	vector<Path*> files;
-	root.openFile(files);
-	size_t f = files.size();
-	for (size_t i = 0; i < f; i++)
+	//Root root;
+	///*vector<Path*>* list = root.open();
+	//size_t s = list->size();
+	//for (size_t i = 0; i < s; i++)
+	//{
+	//	wcout << list->at(i)->getName() << L"\n";
+	//}*/
+
+	//vector<Path*> files;
+	//Command* c = new Open;
+	//c->setList(&files);
+	////root.openFile(files);
+	//files.push_back(new Directory{ L"D:\\Images" });
+
+	//size_t f = files.size();
+	//for (size_t i = 0; i < f; i++)
+	//{
+	//	wcout << files.at(i)->getName() << L"\n";
+	//}
+
+	//c->execute();(wint_t)
+
+	//f = files.size();
+	//for (size_t i = 0; i < f; i++)
+	//{
+	//	wcout << files.at(i)->getName() << L"\n";
+	//}
+
+	Input ui;
+	FileList fl(L"D:\\Documents");
+
+	while (true)
 	{
-		wcout << files.at(i)->getName() << L"\n";
+		system("cls");
+		fl.print();
+		
+		wchar_t btn = ui.getKey();
+
+		switch (btn)
+		{
+		case NEXT_BTN:
+			fl.nextPage();
+			break;
+		case PREV_BTN:
+			fl.prevPage();
+			break;
+		default:
+			break;
+		}
 	}
+
+	/*wcout << L"get key " << ui.getKey() << L"\n";
+	wcout << L"get line " << ui.getLine() << L"\n";
+	wcout << L"is key " << ui.isKey(NEXT_BTN) << L"\n";
+	wcout << L"get num " << ui.getNum() << L"\n";*/
 
 	return 0;
 }

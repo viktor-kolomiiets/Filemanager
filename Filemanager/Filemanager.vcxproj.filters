@@ -23,5 +23,11 @@
     <ClInclude Include="file.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="app.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="commands.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

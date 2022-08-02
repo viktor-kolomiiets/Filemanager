@@ -218,10 +218,26 @@ uintmax_t Directory::getSizeByte() const
 
 inline vector<Path*>* Directory::open()
 {
-	vector<Path*> buffer;
-	buffer.push_back(new Directory{ this->fPath });
+	vector<Path*>* buffer = new vector<Path*>;
+	buffer->push_back(new Directory{ this->fPath });
 
-	return &buffer;
+	for (directory_iterator next(fPath, directory_options::skip_permission_denied), end; next != end; ++next)
+	{
+		try
+		{
+			path file = next->path();
+			if (is_directory(file))
+				buffer->push_back(new Directory{ file.wstring() });
+			else
+				buffer->push_back(new File{ file.wstring() });
+		}
+		catch (filesystem_error&)
+		{
+			continue;
+		}
+	}
+
+	return buffer;
 }
 
 inline void Directory::openFile(vector<Path*>& list)
