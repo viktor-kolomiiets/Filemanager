@@ -9,6 +9,11 @@ public:
 	explicit Path(wstring fPathP) : fPath{ fPathP } {}
 	explicit Path() : Path{ L"" } {}
 
+	friend wostream& operator<<(wostream& out, const Path& file)
+	{
+		return out << file.getName();
+	}
+
 	virtual wstring getName() const { return fPath.filename(); }
 	virtual wstring getPath() const { return fPath.wstring(); }
 	virtual wstring getParent() const { return fPath.parent_path(); }
@@ -97,7 +102,7 @@ class File : public Path
 public:
 	explicit File(wstring fPathP) : Path{ fPathP } {}
 	explicit File() : File{ L"" } {}
-	
+
 	uintmax_t getSizeByte() const override { return file_size(this->fPath); }
 	bool isFile() const override { return true; }
 

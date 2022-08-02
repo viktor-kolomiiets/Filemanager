@@ -1,44 +1,5 @@
 #pragma once
 
-class App
-{
-protected:
-	vector<Path*>* files;
-public:
-	App() : files{ nullptr } {}
-	virtual void draw() = 0;
-	virtual ~App() { if (files) delete files; }
-};
-
-class Application
-{
-private:
-	vector<Path*> files;
-	Directory current;
-
-public:
-	Application() = default;
-
-	void draw();
-};
-
-void Application::draw()
-{
-	for (;;)
-	{
-		system("cls");
-		wstring delim(105, L'-');
-
-		wcout << delim << L"\n";
-		wcout << current.getPath() << L"\n";
-		wcout << delim << L"\n";
-
-		wcout << delim << L"\n";
-		wcout << L"\n";
-		wcout << delim << L"\n";
-	}
-}
-
 class Window
 {
 private:
@@ -110,12 +71,12 @@ private:
 
 public:
 	explicit FileList() : files{ nullptr }, page{ 1ull } {}
-	explicit FileList(wstring pathP) : files{ nullptr }, page{ 1ull } { init(new Directory { pathP }); }
+	explicit FileList(wstring pathP) : files{ nullptr }, page{ 1ull } { openPath(new Directory { pathP }); }
 
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 
-	void init(Path*);
+	void openPath(Path*);
 	void printAll() const;
 	void print() const;
 	void nextPage();
@@ -128,7 +89,7 @@ private:
 	size_t getMaxPage() const;
 };
 
-inline void FileList::init(Path* fpath)
+inline void FileList::openPath(Path* fpath)
 {
 	if (fpath->isFile())
 	{

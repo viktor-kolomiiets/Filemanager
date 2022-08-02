@@ -61,35 +61,7 @@ int wmain()
 	//f - find
 	//tab - next page
 	//space - prev page
-	//p - change partition
-
-	//Root root;
-	///*vector<Path*>* list = root.open();
-	//size_t s = list->size();
-	//for (size_t i = 0; i < s; i++)
-	//{
-	//	wcout << list->at(i)->getName() << L"\n";
-	//}*/
-
-	//vector<Path*> files;
-	//Command* c = new Open;
-	//c->setList(&files);
-	////root.openFile(files);
-	//files.push_back(new Directory{ L"D:\\Images" });
-
-	//size_t f = files.size();
-	//for (size_t i = 0; i < f; i++)
-	//{
-	//	wcout << files.at(i)->getName() << L"\n";
-	//}
-
-	//c->execute();(wint_t)
-
-	//f = files.size();
-	//for (size_t i = 0; i < f; i++)
-	//{
-	//	wcout << files.at(i)->getName() << L"\n";
-	//}
+	//p - change partition 
 
 	Input ui;
 	FileList fl(L"D:\\Documents");
@@ -113,6 +85,10 @@ int wmain()
 			break;
 		}
 	}
+
+	/*Path* f = new File{ L"D:\\Images\\img.png" };
+	Path* ff = new Directory{ L"D:\\Images" };
+	wcout << *f << L"\n";*/
 
 	/*wcout << L"get key " << ui.getKey() << L"\n";
 	wcout << L"get line " << ui.getLine() << L"\n";
