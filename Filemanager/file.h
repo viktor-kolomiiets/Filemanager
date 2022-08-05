@@ -62,16 +62,11 @@ public:
 
 class Partition : public Path
 {
-private:
-	wstring label;
-
 public:
-	explicit Partition(wstring fPathP, wstring labelP) : Path{ fPathP }, label{ labelP } {}
-	explicit Partition(wstring fPathP) : Partition{ fPathP, L"Local Disk" } {}
-	explicit Partition() : Partition{ L"", L"Local Disk"} {}
+	explicit Partition(wstring fPathP) : Path{ fPathP } {}
+	explicit Partition() : Partition{ L"" } {}
 
 	wstring getName() const override;
-	//wstring getPath() const override { return L""; }
 	wstring getParent() const override { return L""; }
 	wstring getSize() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
@@ -129,14 +124,11 @@ inline vector<Path*>* Root::open()
 		// если единица - диск с номером x есть
 		if (n)
 		{
-			wstring partitionPath, label;
-			label += L"Local Disk ";
-			label += (wchar_t)(65 + x);
+			wstring partitionPath{ L"" };
 
 			partitionPath += (wchar_t)(65 + x);
 			partitionPath += L":\\";
-			//buffer->push_back
-			buffer->push_back(new Partition{ partitionPath, label });
+			buffer->push_back(new Partition{ partitionPath });
 		}
 	}
 
@@ -160,13 +152,11 @@ inline void Root::openFile(vector<Path*>& list)
 		// если единица - диск с номером x есть
 		if (n)
 		{
-			wstring partitionPath, label;
-			label += L"Local Disk ";
-			label += (wchar_t)(65 + x);
+			wstring partitionPath;
 
 			partitionPath += (wchar_t)(65 + x);
 			partitionPath += L":\\";
-			list.push_back(new Partition{ partitionPath, label });
+			list.push_back(new Partition{ partitionPath });
 		}
 	}
 }
@@ -175,7 +165,8 @@ inline void Root::openFile(vector<Path*>& list)
 
 wstring Partition::getName() const
 {
-	return label;
+	Filesystem fs;
+	return fs.getVolumeLabel(fPath.wstring());
 }
 
 inline vector<Path*>* Partition::open()

@@ -37,6 +37,7 @@ using namespace std::filesystem;
 #define DIRECTORY_CLR 2
 #define DEFAULT_CLR 15
 
+#include "filesystem.h"
 #include "file.h"
 #include "commands.h"
 #include "app.h"
@@ -63,7 +64,7 @@ int wmain()
 	//space - prev page
 	//p - change partition 
 
-	Input ui;
+	/*Input ui;
 	FileList fl(L"D:\\Documents");
 
 	while (true)
@@ -84,7 +85,30 @@ int wmain()
 		default:
 			break;
 		}
-	}
+	}*/
+	/*wchar_t vol_name[MAX_PATH + 1];
+	wchar_t fs_name[MAX_PATH + 1];
+	vol_name[MAX_PATH] = L'\0';
+	fs_name[MAX_PATH] = L'\0';
+
+	bool gvi = GetVolumeInformation(L"D:\\",
+		vol_name, MAX_PATH,
+		NULL, NULL, NULL,
+		fs_name, MAX_PATH);
+
+	wcout << vol_name << L"\n" << fs_name << L"\n";
+	wcout << gvi << L"\n";
+
+	path p{ L"D:\\" };
+	wcout << p.has_root_directory() << L" has root\n";
+	wcout << p.root_directory() << L" root dir\n";
+	wcout << p.root_name() << L" root name\n";
+	wcout << p.root_path() << L" root path\n";
+	wcout << p.stem() << L" stem\n";*/
+
+	Filesystem fs;
+	wcout << fs.getVolumeLabel(L"D:\\") << L"\n";
+	wcout << fs.getFSName(L"D:\\") << L"\n";
 
 	/*Path* f = new File{ L"D:\\Images\\img.png" };
 	Path* ff = new Directory{ L"D:\\Images" };
