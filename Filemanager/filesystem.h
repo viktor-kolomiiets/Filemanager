@@ -4,9 +4,12 @@ class Filesystem
 {
 public:
 	bool isExist(wstring) const;
+
 	wstring getVolumeLabel(wstring) const;
 	wstring getFSName(wstring) const;
+
 	bool createFile(wstring, wstring) const;
+	bool createDirectory(wstring, wstring) const;
 };
 
 inline bool Filesystem::isExist(wstring pathP) const
@@ -49,17 +52,27 @@ inline bool Filesystem::createFile(wstring nameP, wstring pathP) const
 	wstring fpath{ pathP + L'\\' + nameP + L".txt" };
 
 	FILE* file;
-	errno_t err;
 	try
 	{
 		if (this->isExist(pathP))
-			err = _wfopen_s(&file, fpath.c_str(), L"w");
-		/*if (err == 0)
 		{
+			errno_t err = _wfopen_s(&file, fpath.c_str(), L"w");
+
+			if (err)
+				throw L"Can\'t create a " + nameP + L" in " + pathP + L" directory";
+
+			if (file)
+				err = fclose(file);
 			
-		}*/
-		if (file)
-			err = fclose(file);
+			return !err;
+		}
+		
+	}
+	catch (const wstring& msg)
+	{
+		_fcloseall();
+		wcout << msg << L"\n";
+		return false;
 	}
 	catch (const std::exception&)
 	{
@@ -68,5 +81,19 @@ inline bool Filesystem::createFile(wstring nameP, wstring pathP) const
 		return false;
 	}
 
-	return true;
+	return false;
+}
+
+inline bool Filesystem::createDirectory(wstring nameP, wstring pathP) const
+{
+	wstring fpath{ pathP + L'\\' + nameP };
+
+	//if parent path of new directory is exist
+	if (this->isExist(pathP))
+	{
+		create_directory(path{ fpath });
+		return true;
+	}
+	
+	return false;
 }

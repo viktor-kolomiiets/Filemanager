@@ -109,6 +109,9 @@ int wmain()
 	Filesystem fs;
 	wcout << fs.getVolumeLabel(L"D:\\") << L"\n";
 	wcout << fs.getFSName(L"D:\\") << L"\n";
+	//fs.createDirectory(L"aaa", L"D:\\");
+	//bool s = fs.createFile(L"aaa1", L"D:\\aaa");
+	//wcout << s << L"\n";
 
 	/*Path* f = new File{ L"D:\\Images\\img.png" };
 	Path* ff = new Directory{ L"D:\\Images" };
