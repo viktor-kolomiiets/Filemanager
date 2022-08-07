@@ -77,6 +77,9 @@ public:
 	Path*& operator[](size_t index) { return files->at(index); }
 
 	void openPath(Path*);
+	/*void open(const Path* p) { return; }
+	void open(File*);
+	void open(Directory*);*/
 	void printAll() const;
 	void print() const;
 	void nextPage();
@@ -119,6 +122,36 @@ inline void FileList::openPath(Path* fpath)
 		}
 	}
 }
+
+//inline void FileList::open(File* file)
+//{
+//	ShellExecute(NULL, NULL, file->getPath().c_str(), NULL, NULL, SW_RESTORE);
+//}
+//
+//inline void FileList::open(Directory* dir)
+//{
+//	page = 1u;
+//	this->clear();
+//
+//	files = new vector<Path*>;
+//	files->push_back(new Directory{ dir->getParent() });
+//
+//	for (directory_iterator next(dir->getPath(), directory_options::skip_permission_denied), end; next != end; ++next)
+//	{
+//		try
+//		{
+//			path file = next->path();
+//			if (is_directory(file))
+//				files->push_back(new Directory{ file.wstring() });
+//			else
+//				files->push_back(new File{ file.wstring() });
+//		}
+//		catch (filesystem_error&)
+//		{
+//			continue;
+//		}
+//	}
+//}
 
 inline void FileList::printAll() const
 {

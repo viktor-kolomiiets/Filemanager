@@ -109,18 +109,12 @@ int wmain()
 	Filesystem fs;
 	wcout << fs.getVolumeLabel(L"D:\\") << L"\n";
 	wcout << fs.getFSName(L"D:\\") << L"\n";
-	//fs.createDirectory(L"aaa", L"D:\\");
-	//bool s = fs.createFile(L"aaa1", L"D:\\aaa");
-	//wcout << s << L"\n";
+	wcout << Filesystem{}.getVolumeLabel(L"D:\\") << L"\n";
+	wcout << fs.getUserName() << L"\n";
 
-	/*Path* f = new File{ L"D:\\Images\\img.png" };
-	Path* ff = new Directory{ L"D:\\Images" };
-	wcout << *f << L"\n";*/
-
-	/*wcout << L"get key " << ui.getKey() << L"\n";
-	wcout << L"get line " << ui.getLine() << L"\n";
-	wcout << L"is key " << ui.isKey(NEXT_BTN) << L"\n";
-	wcout << L"get num " << ui.getNum() << L"\n";*/
+	/*FileList fl;
+	Path* f = new File{ L"D:\\Images\\Trash\\Id3ELZModOA.jpg" };
+	Path* ff = new Directory{ L"D:\\Images" };*/
 
 	return 0;
 }
