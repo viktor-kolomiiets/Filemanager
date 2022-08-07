@@ -13,6 +13,7 @@ public:
 	wstring getVolumeLabel(wstring) const;
 	wstring getFSName(wstring) const;
 	wstring getUserName() const;
+	wstring getCompName() const;
 
 	bool createFile(wstring, wstring) const;
 	bool createDir(wstring, wstring) const;
@@ -102,10 +103,24 @@ inline wstring Filesystem::getUserName() const
 {
 	wchar_t u_name[MAX_PATH + 1]{};
 	u_name[MAX_PATH] = L'\0';
-	DWORD len;
+	DWORD len{ 0 };
+
+	GetUserName(NULL, &len);
 	bool gun = GetUserName(u_name, &len);
 
 	return wstring{ u_name };
+}
+
+inline wstring Filesystem::getCompName() const
+{
+	wchar_t pc_name[MAX_PATH + 1]{};
+	pc_name[MAX_PATH] = L'\0';
+	DWORD len{ 0 };
+
+	GetComputerName(NULL, &len);
+	bool gun = GetComputerName(pc_name, &len);
+
+	return wstring{ pc_name };
 }
 
 inline bool Filesystem::createFile(wstring nameP, wstring pathP) const
