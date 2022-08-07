@@ -27,11 +27,12 @@ public:
 
 inline wstring Path::getSize() const
 {
-	wstring vals[]{ L" bytes", L" KiB", L" MiB", L" GiB" };
+	const short int SIZE = 5;
+	wstring vals[SIZE]{ L" bytes", L" KiB", L" MiB", L" GiB", L" TiB" };
 	uintmax_t fsize = getSizeByte();
 
-	int i = 0;
-	for (; i < 4; i++)
+	short int i = 0;
+	for (; i < SIZE; i++)
 	{
 		if (fsize < 1024ull)
 			break;
@@ -68,8 +69,7 @@ public:
 
 	wstring getName() const override;
 	wstring getParent() const override { return L""; }
-	wstring getSize() const override { return L""; }
-	uintmax_t getSizeByte() const override { return 0ull; }
+	uintmax_t getSizeByte() const override;
 
 	vector<Path*>* open() override;
 	void openFile(vector<Path*>& list) override;
@@ -182,6 +182,13 @@ inline void Partition::openFile(vector<Path*>& list)
 
 }
 
+inline uintmax_t Partition::getSizeByte() const
+{
+	ULARGE_INTEGER freeAv{ 0 }, total{ 0 };
+	bool f = GetDiskFreeSpaceEx(this->getPath().c_str(), &freeAv, &total, NULL);
+	return static_cast<uintmax_t>(total.QuadPart - freeAv.QuadPart);
+}
+
 //------------------------------DIRECTORY----------------------------------------------------------
 
 uintmax_t Directory::getSizeByte() const
@@ -251,5 +258,6 @@ vector<Path*>* File::open()
 
 inline void File::openFile(vector<Path*>& list)
 {
-	ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
+	//ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
+	Filesystem{}.openFile(this->getPath());
 }

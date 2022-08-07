@@ -15,6 +15,9 @@ public:
 	wstring getUserName() const;
 	wstring getCompName() const;
 
+	void openFile(wstring) const;
+	void openDir(wstring) const;
+
 	bool createFile(wstring, wstring) const;
 	bool createDir(wstring, wstring) const;
 	bool copyFile(wstring, wstring) const;
@@ -121,6 +124,16 @@ inline wstring Filesystem::getCompName() const
 	bool gun = GetComputerName(pc_name, &len);
 
 	return wstring{ pc_name };
+}
+
+inline void Filesystem::openFile(wstring pathP) const
+{
+	ShellExecute(NULL, NULL, pathP.c_str(), NULL, NULL, SW_RESTORE);
+}
+
+inline void Filesystem::openDir(wstring pathP) const
+{
+	
 }
 
 inline bool Filesystem::createFile(wstring nameP, wstring pathP) const

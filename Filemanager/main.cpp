@@ -111,13 +111,9 @@ int wmain()
 	wcout << fs.getFSName(L"D:\\") << L"\n";
 	wcout << Filesystem{}.getVolumeLabel(L"D:\\") << L"\n";
 	wcout << fs.getCompName() << L"\\" << fs.getUserName() << L"\n";
-	
-	ULARGE_INTEGER freeAv, total;
-	bool f = GetDiskFreeSpaceEx(L"D:\\", &freeAv, &total, NULL);
-	wcout << (INT64)freeAv.QuadPart / 1024 / 1024 / 1024 << L" " << total.QuadPart / 1024 / 1024 / 1024 << L"\n";
-	wcout << ((INT64)total.QuadPart / 1024 / 1024 / 1024) - ((INT64)freeAv.QuadPart / 1024 / 1024 / 1024) << L"\n";
 
-	system("dir D:\\Images");
+	Path* p = new Partition{ L"D:\\" };
+	wcout << p->getSize() << L"\n";
 
 	/*FileList fl;
 	Path* f = new File{ L"D:\\Images\\Trash\\Id3ELZModOA.jpg" };
