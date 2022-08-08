@@ -162,7 +162,7 @@ inline void FileList::printAll() const
 
 inline void FileList::print() const
 {
-	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	//HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	size_t lsize = files->size();
 	size_t min = (page - 1u) * PAGE_SIZE;
 
@@ -175,24 +175,26 @@ inline void FileList::print() const
 			continue;
 		}
 		//SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | 15));	//set color
-		wstring spacer{ L"-------" };
-		int ccode = DIRECTORY_CLR;
+		//wstring spacer{ L"-------" };
+		//int ccode = DIRECTORY_CLR;
 
-		if (files->at(it)->isFile())
-		{
-			ccode = FILE_CLR;
-			spacer = files->at(it)->getSize();
-		}
+		//if (files->at(it)->isFile())
+		//{
+		//	ccode = FILE_CLR;
+		//	spacer = files->at(it)->getSize();
+		//}
 
-		SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | ccode));	//set color
-		wcout << L" " << it << L"\t" << spacer;
-		wcout.width(4);
-		
-		wcout << L"\t" << files->at(it)->getName();
+		//SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | ccode));	//set color
+		//wcout << L" " << it << L"\t" << spacer;
+		//wcout.width(4);
+		//
+		//wcout << L"\t" << files->at(it)->getName();
+
+		wcout << L" " << it << L"\t" << *files->at(it);
 		wcout << L"\n";
 	}
 
-	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DEFAULT_CLR));	//set white color
+	//SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DEFAULT_CLR));	//set white color
 }
 
 inline void FileList::nextPage()

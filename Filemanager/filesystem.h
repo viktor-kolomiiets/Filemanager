@@ -10,6 +10,10 @@ public:
 	wstring getParent(wstring) const;
 	wstring getFilename(wstring) const;
 
+	uintmax_t getFileSize(wstring) const;
+	uintmax_t getDirSize(wstring) const;
+	uintmax_t getVolumeUsed(wstring) const;
+
 	wstring getVolumeLabel(wstring) const;
 	wstring getFSName(wstring) const;
 	wstring getUserName() const;
@@ -23,6 +27,8 @@ public:
 	bool copyFile(wstring, wstring) const;
 	bool renameFile(wstring, wstring) const;
 	bool deleteFile(wstring) const;
+	bool moveFile(wstring, wstring) const;
+	vector<wstring> findFiles(wstring, wstring) const;
 };
 
 inline bool Filesystem::isExist(wstring pathP) const
@@ -70,6 +76,46 @@ inline wstring Filesystem::getFilename(wstring pathP) const
 			buffer += pathP[i];
 
 	return buffer;
+}
+
+inline uintmax_t Filesystem::getFileSize(wstring pathP) const
+{
+	return file_size(pathP);
+}
+
+inline uintmax_t Filesystem::getDirSize(wstring pathP) const
+{
+	uintmax_t fsizeb = 0ull;
+
+	try
+	{
+		for (recursive_directory_iterator next(pathP), end; next != end; ++next)
+		{
+			try
+			{
+				if (!next->is_directory())
+					fsizeb += next->file_size();
+			}
+			catch (const filesystem_error&)
+			{
+				fsizeb += 0ull;
+				continue;
+			}
+		}
+	}
+	catch (const exception&)
+	{
+		return fsizeb;
+	}
+
+	return fsizeb;
+}
+
+inline uintmax_t Filesystem::getVolumeUsed(wstring pathP) const
+{
+	ULARGE_INTEGER freeAv{ 0 }, total{ 0 };
+	bool f = GetDiskFreeSpaceEx(pathP.c_str(), &freeAv, &total, NULL);
+	return static_cast<uintmax_t>(total.QuadPart - freeAv.QuadPart);
 }
 
 inline wstring Filesystem::getVolumeLabel(wstring pathP) const
@@ -246,4 +292,14 @@ inline bool Filesystem::deleteFile(wstring pathP) const
 	}
 
 	return false;
+}
+
+inline bool Filesystem::moveFile(wstring from, wstring to) const
+{
+	return false;
+}
+
+inline vector<wstring> Filesystem::findFiles(wstring mask, wstring target) const
+{
+	return vector<wstring>();
 }

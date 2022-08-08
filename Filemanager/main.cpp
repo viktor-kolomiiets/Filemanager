@@ -21,6 +21,7 @@ using namespace std;
 using namespace std::filesystem;
 
 #define OPEN_BTN L'o'
+#define BACK_BTN L'q'
 #define NEW_FILE_BTN L'a'
 #define NEW_FOLDER_BTN L'n'
 #define DELETE_BTN L'x'
@@ -35,7 +36,7 @@ using namespace std::filesystem;
 
 #define FILE_CLR 14
 #define DIRECTORY_CLR 2
-#define DEFAULT_CLR 15
+constexpr auto DEFAULT_CLR = 15;
 
 #include "filesystem.h"
 #include "file.h"
@@ -64,7 +65,7 @@ int wmain()
 	//space - prev page
 	//p - change partition 
 
-	/*Input ui;
+	Input ui;
 	FileList fl(L"D:\\Documents");
 
 	while (true)
@@ -73,6 +74,8 @@ int wmain()
 		fl.print();
 		
 		wchar_t btn = ui.getKey();
+		if (btn == BACK_BTN)
+			break;
 
 		switch (btn)
 		{
@@ -85,39 +88,24 @@ int wmain()
 		default:
 			break;
 		}
-	}*/
-	/*wchar_t vol_name[MAX_PATH + 1];
-	wchar_t fs_name[MAX_PATH + 1];
-	vol_name[MAX_PATH] = L'\0';
-	fs_name[MAX_PATH] = L'\0';
+	}
 
-	bool gvi = GetVolumeInformation(L"D:\\",
-		vol_name, MAX_PATH,
-		NULL, NULL, NULL,
-		fs_name, MAX_PATH);
-
-	wcout << vol_name << L"\n" << fs_name << L"\n";
-	wcout << gvi << L"\n";
-
-	path p{ L"D:\\" };
-	wcout << p.has_root_directory() << L" has root\n";
-	wcout << p.root_directory() << L" root dir\n";
-	wcout << p.root_name() << L" root name\n";
-	wcout << p.root_path() << L" root path\n";
-	wcout << p.stem() << L" stem\n";*/
-
-	Filesystem fs;
-	wcout << fs.getVolumeLabel(L"D:\\") << L"\n";
-	wcout << fs.getFSName(L"D:\\") << L"\n";
+	/*Filesystem fs;
+	wcout << fs.getVolumeLabel(L"C:\\") << L"\n";
+	wcout << fs.getFSName(L"C:\\") << L"\n";
 	wcout << Filesystem{}.getVolumeLabel(L"D:\\") << L"\n";
-	wcout << fs.getCompName() << L"\\" << fs.getUserName() << L"\n";
+	wcout << fs.getCompName() << L"\\" << fs.getUserName() << L"\n";*/
 
-	Path* p = new Partition{ L"D:\\" };
-	wcout << p->getSize() << L"\n";
+	/*wstring str(97, (wchar_t)45);
+	wcout << str << L"\n";*/
 
 	/*FileList fl;
 	Path* f = new File{ L"D:\\Images\\Trash\\Id3ELZModOA.jpg" };
 	Path* ff = new Directory{ L"D:\\Images" };*/
+
+	wcout << Partition{ L"C:\\" } << L"\n";
+	wcout << Partition{ L"D:\\" } << L"\n";
+	wcout << Partition{ L"E:\\" } << L"\n";
 
 	return 0;
 }
