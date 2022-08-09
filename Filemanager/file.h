@@ -98,6 +98,9 @@ public:
 	explicit Directory(wstring fPathP) : Path{ fPathP } {}
 	explicit Directory() : Directory{ L"" } {}
 
+	Directory& operator=(const Directory& dir);
+	Directory& operator=(const Partition& part);
+
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
 
@@ -227,6 +230,18 @@ inline wostream& Partition::print(wostream& out) const
 }
 
 //------------------------------DIRECTORY----------------------------------------------------------
+
+inline Directory& Directory::operator=(const Directory& dir)
+{
+	this->fPath = dir.fPath;
+	return *this;
+}
+
+inline Directory& Directory::operator=(const Partition& part)
+{
+	this->fPath = part.getPath();
+	return *this;
+}
 
 uintmax_t Directory::getSizeByte() const
 {

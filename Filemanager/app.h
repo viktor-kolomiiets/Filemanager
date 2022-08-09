@@ -58,6 +58,7 @@ public:
 	Path*& operator[](size_t index) { return files->at(index); }
 
 	void openPath(Path*);
+	void openDir(Directory);
 	/*void open(const Path* p) { return; }
 	void open(File*);
 	void open(Directory*);*/
@@ -93,6 +94,32 @@ inline void FileList::openPath(Path* fpath)
 		{
 			path file = next->path();
 			if (is_directory(file))
+				files->push_back(new Directory{ file.wstring() });
+			else
+				files->push_back(new File{ file.wstring() });
+		}
+		catch (filesystem_error&)
+		{
+			continue;
+		}
+	}
+}
+
+inline void FileList::openDir(Directory dir)
+{
+	page = 1u;
+	this->clear();
+
+	files = new vector<Path*>;
+	//files->push_back(new Directory{ fpath->getParent() });
+
+	for (directory_iterator next(dir.getPath(), directory_options::skip_permission_denied), end; next != end; ++next)
+	{
+		try
+		{
+			path file = next->path();
+			bool isDir = Filesystem{}.isDir(file.wstring());
+			if (isDir)
 				files->push_back(new Directory{ file.wstring() });
 			else
 				files->push_back(new File{ file.wstring() });
@@ -220,5 +247,53 @@ FileList::~FileList()
 class Window
 {
 private:
+	Directory current;
+	vector<Directory*>* history{ nullptr };
+	FileList fl;
 
+public:
+	Window() = default;
+
+	void goLastDir();
+	void setCurrentDir(size_t);
+	void openDir();
+
+	void draw();
+
+	~Window();
 };
+
+void Window::goLastDir()
+{
+	if (this->history->size() > 0)
+	{
+		current = *this->history->back();
+		this->history->pop_back();
+	}
+	
+	this->openDir();
+}
+
+inline void Window::setCurrentDir(size_t no)
+{
+	//current = fl[no];
+}
+
+void Window::openDir()
+{
+	fl.openDir(current);
+}
+
+inline void Window::draw()
+{
+
+}
+
+Window::~Window()
+{
+	if (history)
+	{
+		delete history;
+		history = nullptr;
+	}
+}

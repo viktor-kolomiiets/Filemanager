@@ -120,5 +120,9 @@ int wmain()
 	for (size_t i{ 0 }; i < prs.size(); i++)
 		wcout << prs.at(i) << L"\n";
 
+	prs.pop_back();
+	for (size_t i{ 0 }; i < prs.size(); i++)
+		wcout << prs.at(i) << L"\n";
+
 	return 0;
 }
