@@ -66,6 +66,10 @@ int wmain()
 	//p - change partition 
 
 	Input ui;
+	Filesystem fs;
+	FileList fl(L"D:\\Documents");
+
+	/*Input ui;
 	FileList fl(L"D:\\Documents");
 
 	while (true)
@@ -88,7 +92,7 @@ int wmain()
 		default:
 			break;
 		}
-	}
+	}*/
 
 	/*Filesystem fs;
 	wcout << fs.getVolumeLabel(L"C:\\") << L"\n";
@@ -103,9 +107,22 @@ int wmain()
 	Path* f = new File{ L"D:\\Images\\Trash\\Id3ELZModOA.jpg" };
 	Path* ff = new Directory{ L"D:\\Images" };*/
 
-	wcout << Partition{ L"C:\\" } << L"\n";
+	/*wcout << Partition{ L"C:\\" } << L"\n";
 	wcout << Partition{ L"D:\\" } << L"\n";
-	wcout << Partition{ L"E:\\" } << L"\n";
+	wcout << Partition{ L"E:\\" } << L"\n";*/
+
+	vector<wstring> fls = *fs.getAllFiles(L"D:\\Images");
+	vector<wstring> ds = fs.getDirs(L"D:\\Images");
+	vector<wstring> prs = fs.getPartitions();
+
+	for (size_t i{ 0 }; i < fls.size(); i++)
+		wcout << fls.at(i) << L"\n";
+
+	for (size_t i{ 0 }; i < ds.size(); i++)
+		wcout << ds.at(i) << L"\n";
+
+	for (size_t i{ 0 }; i < prs.size(); i++)
+		wcout << prs.at(i) << L"\n";
 
 	return 0;
 }

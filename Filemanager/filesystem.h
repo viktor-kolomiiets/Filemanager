@@ -28,7 +28,12 @@ public:
 	bool renameFile(wstring, wstring) const;
 	bool deleteFile(wstring) const;
 	bool moveFile(wstring, wstring) const;
+
 	vector<wstring> findFiles(wstring, wstring) const;
+
+	vector<wstring>* getAllFiles(wstring) const;
+	vector<wstring> getDirs(wstring) const;
+	vector<wstring> getPartitions() const;
 };
 
 inline bool Filesystem::isExist(wstring pathP) const
@@ -296,10 +301,145 @@ inline bool Filesystem::deleteFile(wstring pathP) const
 
 inline bool Filesystem::moveFile(wstring from, wstring to) const
 {
+	try
+	{
+		to += L"\\" + this->getFilename(from);
+		rename(path{ from }, path{ to });
+		return true;
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}
+
 	return false;
 }
 
 inline vector<wstring> Filesystem::findFiles(wstring mask, wstring target) const
 {
-	return vector<wstring>();
+	vector<wstring> folders;
+	vector<wstring> results;
+
+	//forming list of subdirs
+	folders.push_back(target);
+	try
+	{
+		for (recursive_directory_iterator next(folders.at(0), directory_options::skip_permission_denied), end; next != end; ++next)
+		{
+			try
+			{
+				if (this->isDir(next->path().wstring()))
+					folders.push_back(next->path().wstring());
+			}
+			catch (const filesystem_error& er)
+			{
+				continue;
+			}
+		}
+	}
+	catch (const std::exception&)
+	{
+		wcout << L"Error\n";
+	}
+
+	//search by mask in each subdirs
+	for (size_t i{ 0 }; i < folders.size(); i++)
+	{
+		wstring search;
+		search = folders.at(i) + L'\\' + mask;
+
+		try
+		{
+			WIN32_FIND_DATA fileData;
+			HANDLE hFind;
+
+			hFind = FindFirstFile(search.c_str(), &fileData);
+			if (hFind == INVALID_HANDLE_VALUE)
+				continue;
+			else
+			{
+				do
+				{
+					wstring fname = fileData.cFileName;
+					wstring fpath = folders.at(i) + L'\\' + fname;
+
+					if (!this->isDir(fpath))
+						results.push_back(fpath);
+
+				} while (FindNextFile(hFind, &fileData));
+			}
+			if (hFind)
+				FindClose(hFind);
+		}
+		catch (const std::exception&)
+		{
+			continue;
+		}
+	}
+
+	return results;
+}
+
+inline vector<wstring>* Filesystem::getAllFiles(wstring pathP) const
+{
+	vector<wstring>* buffer = new vector<wstring>;
+	for (directory_iterator next(pathP, directory_options::skip_permission_denied), end; next != end; ++next)
+	{
+		try
+		{
+			buffer->push_back(next->path().wstring());
+		}
+		catch (const filesystem_error&)
+		{
+			continue;
+		}
+	}
+
+	return buffer;
+}
+
+inline vector<wstring> Filesystem::getDirs(wstring pathP) const
+{
+	vector<wstring> buffer;
+	for (directory_iterator next(pathP, directory_options::skip_permission_denied), end; next != end; ++next)
+		try
+		{
+			wstring p = next->path();
+			if (this->isDir(p))
+				buffer.push_back(p);
+		}
+		catch (const filesystem_error&)
+		{
+			continue;
+		}
+
+	return buffer;
+}
+
+inline vector<wstring> Filesystem::getPartitions() const
+{
+	vector<wstring> buffer;
+
+	int n;
+	// функция возвращает битовую маску
+	DWORD drives = GetLogicalDrives();
+
+	// прогоняем по битам
+	for (int x = 0; x < 26; x++)
+	{
+		// определяем значение текущего бита
+		n = ((drives >> x) & 1);
+
+		// если единица - диск с номером x есть
+		if (n)
+		{
+			wstring partitionPath{ L"" };
+
+			partitionPath += (wchar_t)(65 + x);
+			partitionPath += L":\\";
+			buffer.push_back(partitionPath);
+		}
+	}
+
+	return buffer;
 }

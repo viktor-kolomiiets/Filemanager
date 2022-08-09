@@ -3,21 +3,20 @@
 class Path
 {
 protected:
-	path fPath;
-	int textColor;
+	wstring fPath;
 
 public:
-	explicit Path(wstring fPathP, int clrP) : fPath{ fPathP }, textColor{ clrP } {}
-	explicit Path() : Path{ L"", DEFAULT_CLR } {}
+	explicit Path(wstring fPathP) : fPath{ fPathP } {}
+	explicit Path() : Path{ L"" } {}
 
 	friend wostream& operator<<(wostream& out, const Path& pathP)
 	{
 		return pathP.print(out);
 	}
 
-	virtual wstring getName() const { return fPath.filename(); }
-	virtual wstring getPath() const { return fPath.wstring(); }
-	virtual wstring getParent() const { return fPath.parent_path(); }
+	virtual wstring getName() const { return Filesystem{}.getFilename(fPath); }
+	virtual wstring getPath() const { return fPath; }
+	virtual wstring getParent() const { return Filesystem{}.getParent(fPath); }
 	virtual wstring getSize() const;
 	virtual uintmax_t getSizeByte() const = 0;
 	virtual bool isDir() const { return false; }
@@ -58,7 +57,7 @@ inline wostream& Path::print(wostream& out) const
 class Root : public Path
 {
 public:
-	Root() : Path{ L"", DEFAULT_CLR } {}
+	Root() : Path{ L"" } {}
 
 	wstring getName() const override { return L""; }
 	wstring getPath() const override { return L""; }
@@ -78,11 +77,10 @@ private:
 class Partition : public Path
 {
 public:
-	explicit Partition(wstring fPathP) : Path{ fPathP, DIRECTORY_CLR } {}
+	explicit Partition(wstring fPathP) : Path{ fPathP } {}
 	explicit Partition() : Partition{ L"" } {}
 
 	wstring getName() const override;
-	wstring getParent() const override { return Filesystem{}.getParent(this->fPath.wstring()); }
 	uintmax_t getSizeByte() const override;
 
 	vector<Path*>* open() override;
@@ -97,7 +95,7 @@ private:
 class Directory : public Path
 {
 public:
-	explicit Directory(wstring fPathP) : Path{ fPathP, DIRECTORY_CLR } {}
+	explicit Directory(wstring fPathP) : Path{ fPathP } {}
 	explicit Directory() : Directory{ L"" } {}
 
 	uintmax_t getSizeByte() const override;
@@ -115,10 +113,10 @@ private:
 class File : public Path
 {
 public:
-	explicit File(wstring fPathP) : Path{ fPathP, FILE_CLR } {}
+	explicit File(wstring fPathP) : Path{ fPathP } {}
 	explicit File() : File{ L"" } {}
 
-	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(this->fPath.wstring()); }
+	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
 	bool isFile() const override { return true; }
 
 	vector<Path*>* open() override;
@@ -196,7 +194,7 @@ inline wostream& Root::print(wostream& out) const
 wstring Partition::getName() const
 {
 	Filesystem fs;
-	return fs.getVolumeLabel(fPath.wstring());
+	return fs.getVolumeLabel(fPath);
 }
 
 inline vector<Path*>* Partition::open()
@@ -214,7 +212,7 @@ inline void Partition::openFile(vector<Path*>& list)
 
 inline uintmax_t Partition::getSizeByte() const
 {
-	return Filesystem{}.getVolumeUsed(this->fPath.wstring());
+	return Filesystem{}.getVolumeUsed(fPath);
 }
 
 inline wostream& Partition::print(wostream& out) const
@@ -232,7 +230,7 @@ inline wostream& Partition::print(wostream& out) const
 
 uintmax_t Directory::getSizeByte() const
 {
-	return Filesystem{}.getDirSize(this->fPath.wstring());
+	return Filesystem{}.getDirSize(fPath);
 }
 
 inline vector<Path*>* Directory::open()
