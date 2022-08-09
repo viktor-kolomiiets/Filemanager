@@ -1,24 +1,5 @@
 #pragma once
 
-class Window
-{
-private:
-	Directory dir;
-	vector<Path*>* files;
-
-public:
-	explicit Window() : dir{ L"" }, files{ nullptr } {}
-
-	~Window()
-	{
-		if (files)
-		{
-			delete files;
-			files = nullptr;
-		}
-	}
-};
-
 //------------------------------INPUT--------------------------------------------------------------
 
 class Input
@@ -233,3 +214,11 @@ FileList::~FileList()
 {
 	this->clear();
 }
+
+//------------------------------WINDOW-------------------------------------------------------------
+
+class Window
+{
+private:
+
+};

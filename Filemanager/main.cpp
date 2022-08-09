@@ -40,7 +40,6 @@ constexpr auto DEFAULT_CLR = 15;
 
 #include "filesystem.h"
 #include "file.h"
-#include "commands.h"
 #include "app.h"
 
 int wmain()
@@ -69,9 +68,6 @@ int wmain()
 	Filesystem fs;
 	FileList fl(L"D:\\Documents");
 
-	/*Input ui;
-	FileList fl(L"D:\\Documents");
-
 	while (true)
 	{
 		system("cls");
@@ -92,7 +88,7 @@ int wmain()
 		default:
 			break;
 		}
-	}*/
+	}
 
 	/*Filesystem fs;
 	wcout << fs.getVolumeLabel(L"C:\\") << L"\n";

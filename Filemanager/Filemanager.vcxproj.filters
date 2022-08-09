@@ -26,9 +26,6 @@
     <ClInclude Include="app.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="commands.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
     <ClInclude Include="filesystem.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
