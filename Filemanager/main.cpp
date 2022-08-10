@@ -64,7 +64,10 @@ int wmain()
 	//space - prev page
 	//p - change partition 
 
-	Input ui;
+	Window win;
+	win.menu();
+
+	/*Input ui;
 	Filesystem fs;
 	FileList fl(L"D:\\Documents");
 
@@ -88,7 +91,7 @@ int wmain()
 		default:
 			break;
 		}
-	}
+	}*/
 
 	/*Filesystem fs;
 	wcout << fs.getVolumeLabel(L"C:\\") << L"\n";
@@ -107,7 +110,7 @@ int wmain()
 	wcout << Partition{ L"D:\\" } << L"\n";
 	wcout << Partition{ L"E:\\" } << L"\n";*/
 
-	vector<wstring> fls = *fs.getAllFiles(L"D:\\Images");
+	/*vector<wstring> fls = *fs.getAllFiles(L"D:\\Images");
 	vector<wstring> ds = fs.getDirs(L"D:\\Images");
 	vector<wstring> prs = fs.getPartitions();
 
@@ -122,7 +125,7 @@ int wmain()
 
 	prs.pop_back();
 	for (size_t i{ 0 }; i < prs.size(); i++)
-		wcout << prs.at(i) << L"\n";
+		wcout << prs.at(i) << L"\n";*/
 
 	return 0;
 }

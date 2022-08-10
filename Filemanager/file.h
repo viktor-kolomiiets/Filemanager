@@ -100,6 +100,7 @@ public:
 
 	Directory& operator=(const Directory& dir);
 	Directory& operator=(const Partition& part);
+	Directory& operator=(const Path& p);
 
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
@@ -240,6 +241,12 @@ inline Directory& Directory::operator=(const Directory& dir)
 inline Directory& Directory::operator=(const Partition& part)
 {
 	this->fPath = part.getPath();
+	return *this;
+}
+
+inline Directory& Directory::operator=(const Path& p)
+{
+	this->fPath = p.getPath();
 	return *this;
 }
 

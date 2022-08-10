@@ -6,10 +6,14 @@ class Input
 {
 public:
 	Input() = default;
+
 	bool isKey(wchar_t) const;
 	wchar_t getKey() const;
 	wstring getLine() const;
 	size_t getNum() const;
+
+	bool isValidRange(size_t, size_t, size_t) const;
+	bool isValidName(wstring) const;
 };
 
 inline bool Input::isKey(wchar_t k) const
@@ -41,6 +45,23 @@ inline size_t Input::getNum() const
 	return buffer;
 }
 
+inline bool Input::isValidRange(size_t val, size_t min, size_t max) const
+{
+	if (val < min || val > max)
+		return false;
+
+	return true;
+}
+
+inline bool Input::isValidName(wstring str) const
+{
+	size_t pos = str.find_first_of(L"\\/:*?\'\"<>|");
+	if (pos != wstring::npos)
+		return true;
+
+	return false;
+}
+
 //------------------------------FILE_LIST----------------------------------------------------------
 
 class FileList
@@ -52,7 +73,7 @@ private:
 
 public:
 	explicit FileList() : files{ nullptr }, page{ 1ull } {}
-	explicit FileList(wstring pathP) : files{ nullptr }, page{ 1ull } { openPath(new Directory { pathP }); }
+	explicit FileList(wstring pathP) : files{ nullptr }, page{ 1ull } { openDir(Directory { pathP }); }
 
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
@@ -62,12 +83,15 @@ public:
 	/*void open(const Path* p) { return; }
 	void open(File*);
 	void open(Directory*);*/
+
 	void printAll() const;
 	void print() const;
 	void nextPage();
 	void prevPage();
-	void clear();
 
+	size_t getSize() const;
+
+	void clear();
 	~FileList();
 
 private:
@@ -217,6 +241,11 @@ inline void FileList::prevPage()
 		page--;
 }
 
+inline size_t FileList::getSize() const
+{
+	return this->files->size();
+}
+
 inline size_t FileList::getMaxPage() const
 {
 	size_t maxPage{ 1u };
@@ -250,17 +279,23 @@ private:
 	Directory current;
 	vector<Directory*>* history{ nullptr };
 	FileList fl;
+	Input ui;
 
 public:
-	Window() = default;
+	Window();
 
-	void goLastDir();
 	void setCurrentDir(size_t);
-	void openDir();
 
-	void draw();
+	void menu();
 
 	~Window();
+
+private:
+	void goLastDir();
+	void openDir();
+	void draw() const;
+
+	size_t selectItem() const;
 };
 
 void Window::goLastDir()
@@ -274,9 +309,21 @@ void Window::goLastDir()
 	this->openDir();
 }
 
+inline Window::Window()
+{
+	history = new vector<Directory*>;
+}
+
 inline void Window::setCurrentDir(size_t no)
 {
-	//current = fl[no];
+	if (fl[no]->isFile())
+	{
+		Filesystem{}.openFile(fl[no]->getPath());
+		return;
+	}
+	
+	current = *fl[no];
+	history->push_back(new Directory{ fl[no]->getParent() });
 }
 
 void Window::openDir()
@@ -284,9 +331,86 @@ void Window::openDir()
 	fl.openDir(current);
 }
 
-inline void Window::draw()
+inline void Window::menu()
 {
+	fl.openDir(Directory{ L"D:\\Documents" });
+	for (;;)
+	{
+		system("cls");
+		this->draw();
 
+		wchar_t btn = ui.getKey();
+		if (btn == L'0')
+			break;
+
+		switch (btn)
+		{
+		case OPEN_BTN:							//open file or folder
+			this->setCurrentDir(selectItem());
+			this->openDir();
+			break;
+		case BACK_BTN:							//back to previous folder
+			this->goLastDir();
+			break;
+		case NEXT_BTN:							//display next page
+			fl.nextPage();
+			break;
+		case PREV_BTN:							//display previous page
+			fl.prevPage();
+			break;
+		case PARTITION_BTN:						//select partitions to open
+			break;
+		case NEW_FILE_BTN:						//create new file
+			break;
+		case NEW_FOLDER_BTN:					//create new folder
+			break;
+		case DELETE_BTN:						//delete file/folder
+			break;
+		case RENAME_BTN:						//rename file/folder
+			break;
+		case COPY_BTN:							//copy file/folder
+			break;
+		case MOVE_BTN:							//move to another directory file/folder
+			break;
+		case INFO_BTN:							//display information about foder
+			break;
+		case FIND_BTN:							//find file(s)
+			break;
+		default:
+			break;
+		}
+	}
+}
+
+inline void Window::draw() const
+{
+	wstring dlmtr(97, L'-');
+
+	wcout << dlmtr << L"\n";
+	wcout << current.getPath() << L"\n";
+	wcout << dlmtr << L"\n";
+
+	fl.print();
+
+	wcout << dlmtr << L"\n";
+	wcout << "\n";
+	wcout << dlmtr << L"\n";
+}
+
+inline size_t Window::selectItem() const
+{
+	size_t s;
+	size_t maxS = fl.getSize() - 1;
+	for (;;)
+	{
+		wcout << L"Enter No [0 - " << maxS << L"]: ";
+		s = ui.getNum();
+		
+		if (ui.isValidRange(s, 0u, maxS))
+			break;
+	}
+
+	return s;
 }
 
 Window::~Window()
