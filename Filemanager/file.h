@@ -136,26 +136,26 @@ inline vector<Path*>* Root::open()
 {
 	vector<Path*>* buffer = new vector<Path*>;
 
-	int n;
-	// функция возвращает битовую маску
-	DWORD drives = GetLogicalDrives();
+	//int n;
+	//// функция возвращает битовую маску
+	//DWORD drives = GetLogicalDrives();
 
-	// прогоняем по битам
-	for (int x = 0; x < 26; x++)
-	{
-		// определяем значение текущего бита
-		n = ((drives >> x) & 1);
+	//// прогоняем по битам
+	//for (int x = 0; x < 26; x++)
+	//{
+	//	// определяем значение текущего бита
+	//	n = ((drives >> x) & 1);
 
-		// если единица - диск с номером x есть
-		if (n)
-		{
-			wstring partitionPath{ L"" };
+	//	// если единица - диск с номером x есть
+	//	if (n)
+	//	{
+	//		wstring partitionPath{ L"" };
 
-			partitionPath += (wchar_t)(65 + x);
-			partitionPath += L":\\";
-			buffer->push_back(new Partition{ partitionPath });
-		}
-	}
+	//		partitionPath += (wchar_t)(65 + x);
+	//		partitionPath += L":\\";
+	//		buffer->push_back(new Partition{ partitionPath });
+	//	}
+	//}
 
 	return buffer;
 }
@@ -306,7 +306,7 @@ vector<Path*>* File::open()
 inline void File::openFile(vector<Path*>& list)
 {
 	//ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
-	Filesystem{}.openFile(this->getPath());
+	Filesystem{}.executeFile(this->getPath());
 }
 
 inline wostream& File::print(wostream& out) const
