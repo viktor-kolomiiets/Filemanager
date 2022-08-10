@@ -39,9 +39,9 @@ using namespace std::filesystem;
 constexpr auto DEFAULT_CLR = 15;
 
 #include "filesystem.h"
+#include "file.h"
 #include "input.h"
 #include "filelist.h"
-#include "file.h"
 #include "app.h"
 
 int wmain()
