@@ -30,7 +30,7 @@ public:
 
 	vector<wstring> findFiles(wstring, wstring) const;
 
-	vector<wstring>* getAllFiles(wstring) const;
+	vector<wstring> getAllFiles(wstring) const;
 	vector<wstring> getDirs(wstring) const;
 	vector<wstring> getPartitions() const;
 };
@@ -374,14 +374,14 @@ inline vector<wstring> Filesystem::findFiles(wstring mask, wstring target) const
 	return results;
 }
 
-inline vector<wstring>* Filesystem::getAllFiles(wstring pathP) const
+inline vector<wstring> Filesystem::getAllFiles(wstring pathP) const
 {
-	vector<wstring>* buffer = new vector<wstring>;
+	vector<wstring> buffer;// = new vector<wstring>;
 	for (directory_iterator next(pathP, directory_options::skip_permission_denied), end; next != end; ++next)
 	{
 		try
 		{
-			buffer->push_back(next->path().wstring());
+			buffer.push_back(next->path().wstring());
 		}
 		catch (const filesystem_error&)
 		{

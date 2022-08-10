@@ -68,17 +68,27 @@ class FileList
 {
 private:
 	vector<Path*>* files;
+	Path* currentPath;
 	size_t page;
 	const size_t PAGE_SIZE{ 20u };
 
 public:
-	explicit FileList() : files{ nullptr }, page{ 1ull } { openRoot(); }
-	explicit FileList(wstring pathP) : files{ nullptr }, page{ 1ull } { openDir(Directory { pathP }); }
+	explicit FileList() :
+		files{ nullptr },
+		page{ 1ull },
+		currentPath{ nullptr }
+	{ openRoot(); }
+
+	explicit FileList(wstring pathP) :
+		files{ nullptr },
+		page{ 1ull }
+	{ openDir(Directory { pathP }); }
 
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 
 	void openRoot();
+	void open(size_t);
 	void openDir(Directory);
 
 	void printAll() const;
@@ -86,6 +96,7 @@ public:
 	void nextPage();
 	void prevPage();
 
+	wstring getCurrentPathStr() const;
 	size_t getSize() const;
 
 	void clear();
@@ -104,6 +115,37 @@ inline void FileList::openRoot()
 	vector<wstring> parts = Filesystem{}.getPartitions();
 	for (size_t i{ 0 }; i < parts.size(); i++)
 		files->push_back(new Partition{ parts.at(i) });
+
+	currentPath = new Root;
+}
+
+inline void FileList::open(size_t no)
+{
+	if (files->at(no)->isFile())
+	{
+		Filesystem{}.executeFile(files->at(no)->getPath());
+		return;
+	}
+
+	if (currentPath)
+	{
+		delete currentPath;
+		currentPath = nullptr;
+	}
+	currentPath = new Directory{ files->at(no)->getPath() };
+	vector<wstring> fls = Filesystem{}.getAllFiles(files->at(no)->getPath());
+
+	page = 1u;
+	this->clear();
+
+	files = new vector<Path*>;
+	for (size_t i{ 0 }; i < fls.size(); i++)
+	{
+		if (Filesystem{}.isDir(fls.at(i)))
+			files->push_back(new Directory{ fls.at(i) });
+		else
+			files->push_back(new File{ fls.at(i) });
+	}
 }
 
 inline void FileList::openDir(Directory dir)
@@ -192,6 +234,10 @@ inline void FileList::print() const
 		wcout << L" " << it << L"\t" << *files->at(it);
 		wcout << L"\n";
 	}
+
+	wcout << L"\n\t\t\t(space) << ";
+	wcout << page << L"/" << getMaxPage();
+	wcout << L" >> (tab)\n";
 }
 
 inline void FileList::nextPage()
@@ -204,6 +250,11 @@ inline void FileList::prevPage()
 {
 	if (page > 1)
 		page--;
+}
+
+inline wstring FileList::getCurrentPathStr() const
+{
+	return currentPath->getPath();
 }
 
 inline size_t FileList::getSize() const
@@ -293,7 +344,8 @@ inline void Window::setCurrentDir(size_t no)
 
 void Window::openDir()
 {
-	fl.openDir(current);
+	fl.open(selectItem());
+	//fl.openDir(current);
 }
 
 inline void Window::menu()
@@ -311,7 +363,7 @@ inline void Window::menu()
 		switch (btn)
 		{
 		case OPEN_BTN:							//open file or folder
-			this->setCurrentDir(selectItem());
+			//this->setCurrentDir(selectItem());
 			this->openDir();
 			break;
 		case BACK_BTN:							//back to previous folder
@@ -352,13 +404,14 @@ inline void Window::draw() const
 	wstring dlmtr(97, L'-');
 
 	wcout << dlmtr << L"\n";
-	wcout << current.getPath() << L"\n";
+	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << dlmtr << L"\n";
 
 	fl.print();
 
 	wcout << dlmtr << L"\n";
-	wcout << "\n";
+	wcout << L"o. open | a. create file   | x. delete | c. copy | i. info | p. change partition\n";
+	wcout << L"q. back | n. create folder | r. rename | m. move | f. find | 0. Exit\n";
 	wcout << dlmtr << L"\n";
 }
 

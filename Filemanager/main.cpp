@@ -52,6 +52,7 @@ int wmain()
 	results = _setmode(_fileno(stderr), _O_U16TEXT);
 
 	//o - open
+	//q - back
 	//a - create file
 	//n - create folder
 	//x - delete
@@ -62,7 +63,7 @@ int wmain()
 	//f - find
 	//tab - next page
 	//space - prev page
-	//p - change partition 
+	//p - change partition
 
 	Window win;
 	win.menu();
@@ -106,9 +107,10 @@ int wmain()
 	Path* f = new File{ L"D:\\Images\\Trash\\Id3ELZModOA.jpg" };
 	Path* ff = new Directory{ L"D:\\Images" };*/
 
-	/*wcout << Partition{ L"C:\\" } << L"\n";
-	wcout << Partition{ L"D:\\" } << L"\n";
-	wcout << Partition{ L"E:\\" } << L"\n";*/
+	/*wcout << Root{}.getPath() << L"\n";
+	wcout << Partition{ L"C:\\" }.getName() << L"\n";
+	wcout << Partition{ L"D:\\" }.getName() << L"\n";
+	wcout << Partition{ L"E:\\" }.getName() << L"\n";*/
 
 	/*vector<wstring> fls = *fs.getAllFiles(L"D:\\Images");
 	vector<wstring> ds = fs.getDirs(L"D:\\Images");

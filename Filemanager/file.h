@@ -17,18 +17,16 @@ public:
 	virtual wstring getName() const { return Filesystem{}.getFilename(fPath); }
 	virtual wstring getPath() const { return fPath; }
 	virtual wstring getParent() const { return Filesystem{}.getParent(fPath); }
-	virtual wstring getSize() const;
+	virtual wstring getSizeStr() const;
 	virtual uintmax_t getSizeByte() const = 0;
 	virtual bool isDir() const { return false; }
 	virtual bool isFile() const { return false; }
-	virtual vector<Path*>* open() = 0;
-	virtual void openFile(vector<Path*>& list) = 0;
 
 protected:
 	virtual wostream& print(wostream& out) const;
 };
 
-inline wstring Path::getSize() const
+inline wstring Path::getSizeStr() const
 {
 	const short int SIZE = 5;
 	wstring vals[SIZE]{ L" bytes", L" KiB", L" MiB", L" GiB", L" TiB" };
@@ -59,14 +57,11 @@ class Root : public Path
 public:
 	Root() : Path{ L"" } {}
 
-	wstring getName() const override { return L""; }
-	wstring getPath() const override { return L""; }
+	wstring getName() const override { return Filesystem{}.getCompName(); }
+	wstring getPath() const override;
 	wstring getParent() const override { return L""; }
-	wstring getSize() const override { return L""; }
+	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
-
-	vector<Path*>* open() override;
-	void openFile(vector<Path*>& list) override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -82,9 +77,6 @@ public:
 
 	wstring getName() const override;
 	uintmax_t getSizeByte() const override;
-
-	vector<Path*>* open() override;
-	void openFile(vector<Path*>& list) override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -105,9 +97,6 @@ public:
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
 
-	vector<Path*>* open() override;
-	void openFile(vector<Path*>& list) override;
-
 private:
 	wostream& print(wostream& out) const override;
 };
@@ -123,67 +112,17 @@ public:
 	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
 	bool isFile() const override { return true; }
 
-	vector<Path*>* open() override;
-	void openFile(vector<Path*>& list) override;
-
 private:
 	wostream& print(wostream& out) const override;
 };
 
 //------------------------------ROOT---------------------------------------------------------------
 
-inline vector<Path*>* Root::open()
+inline wstring Root::getPath() const
 {
-	vector<Path*>* buffer = new vector<Path*>;
-
-	//int n;
-	//// функция возвращает битовую маску
-	//DWORD drives = GetLogicalDrives();
-
-	//// прогоняем по битам
-	//for (int x = 0; x < 26; x++)
-	//{
-	//	// определяем значение текущего бита
-	//	n = ((drives >> x) & 1);
-
-	//	// если единица - диск с номером x есть
-	//	if (n)
-	//	{
-	//		wstring partitionPath{ L"" };
-
-	//		partitionPath += (wchar_t)(65 + x);
-	//		partitionPath += L":\\";
-	//		buffer->push_back(new Partition{ partitionPath });
-	//	}
-	//}
-
-	return buffer;
-}
-
-inline void Root::openFile(vector<Path*>& list)
-{
-	list.clear();
-
-	int n;
-	// функция возвращает битовую маску
-	DWORD drives = GetLogicalDrives();
-
-	// прогоняем по битам
-	for (int x = 0; x < 26; x++)
-	{
-		// определяем значение текущего бита
-		n = ((drives >> x) & 1);
-
-		// если единица - диск с номером x есть
-		if (n)
-		{
-			wstring partitionPath;
-
-			partitionPath += (wchar_t)(65 + x);
-			partitionPath += L":\\";
-			list.push_back(new Partition{ partitionPath });
-		}
-	}
+	wstring pc_name = this->getName();
+	wstring pc_user = Filesystem{}.getUserName();
+	return wstring{ pc_name + L'\\' + pc_user };
 }
 
 inline wostream& Root::print(wostream& out) const
@@ -198,20 +137,8 @@ inline wostream& Root::print(wostream& out) const
 wstring Partition::getName() const
 {
 	Filesystem fs;
-	return fs.getVolumeLabel(fPath);
-}
-
-inline vector<Path*>* Partition::open()
-{
-	vector<Path*> buffer;
-	buffer.push_back(new Root);
-
-	return &buffer;
-}
-
-inline void Partition::openFile(vector<Path*>& list)
-{
-
+	wstring partChar(this->getParent());
+	return wstring{ fs.getVolumeLabel(fPath) + L" (" + partChar + L')' };
 }
 
 inline uintmax_t Partition::getSizeByte() const
@@ -223,9 +150,9 @@ inline wostream& Partition::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DIRECTORY_CLR));
-	out << this->getSize();
+	out << this->getSizeStr();
 	out.width(4);
-	out << L"\t[" << this->getName() << L" (" << this->getParent() << L")]";
+	out << L"\t[" << this->getName() << L"]";
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DEFAULT_CLR));
 	return out;
 }
@@ -255,35 +182,6 @@ uintmax_t Directory::getSizeByte() const
 	return Filesystem{}.getDirSize(fPath);
 }
 
-inline vector<Path*>* Directory::open()
-{
-	vector<Path*>* buffer = new vector<Path*>;
-	buffer->push_back(new Directory{ this->fPath });
-
-	for (directory_iterator next(fPath, directory_options::skip_permission_denied), end; next != end; ++next)
-	{
-		try
-		{
-			path file = next->path();
-			if (is_directory(file))
-				buffer->push_back(new Directory{ file.wstring() });
-			else
-				buffer->push_back(new File{ file.wstring() });
-		}
-		catch (filesystem_error&)
-		{
-			continue;
-		}
-	}
-
-	return buffer;
-}
-
-inline void Directory::openFile(vector<Path*>& list)
-{
-
-}
-
 inline wostream& Directory::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -297,23 +195,11 @@ inline wostream& Directory::print(wostream& out) const
 
 //------------------------------FILE---------------------------------------------------------------
 
-vector<Path*>* File::open()
-{
-	ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
-	return nullptr;
-}
-
-inline void File::openFile(vector<Path*>& list)
-{
-	//ShellExecute(NULL, NULL, this->getPath().c_str(), NULL, NULL, SW_RESTORE);
-	Filesystem{}.executeFile(this->getPath());
-}
-
 inline wostream& File::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | FILE_CLR));
-	out << this->getSize();
+	out << this->getSizeStr();
 	out.width(4);
 	out << L"\t" << this->getName();
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DEFAULT_CLR));
