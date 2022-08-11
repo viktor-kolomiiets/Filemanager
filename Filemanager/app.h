@@ -37,7 +37,8 @@ void Window::goLastDir()
 	}
 	
 	this->openDir();*/
-	
+	current = Directory{ current.getParent() };
+	fl.openDir(current);
 }
 
 inline Window::Window()
@@ -59,8 +60,9 @@ inline void Window::setCurrentDir(size_t no)
 
 void Window::openDir()
 {
-	fl.open(selectItem());
-	//fl.openDir(current);
+	//fl.open(selectItem());
+	
+	fl.openDir(current);
 }
 
 inline void Window::menu()
@@ -78,7 +80,7 @@ inline void Window::menu()
 		switch (btn)
 		{
 		case OPEN_BTN:							//open file or folder
-			//this->setCurrentDir(selectItem());
+			this->setCurrentDir(selectItem());
 			this->openDir();
 			break;
 		case BACK_BTN:							//back to previous folder
@@ -120,7 +122,8 @@ inline void Window::draw() const
 	wstring dlmtr(97, L'-');
 
 	wcout << dlmtr << L"\n";
-	wcout << fl.getCurrentPathStr() << L"\n";
+	//wcout << fl.getCurrentPathStr() << L"\n";
+	wcout << current.getPath() << L"\n";
 	wcout << dlmtr << L"\n";
 	
 	fl.print();
