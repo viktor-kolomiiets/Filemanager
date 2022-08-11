@@ -13,21 +13,28 @@ private:
 public:
 	explicit FileList() :
 		files{ nullptr },
-		page{ 1ull },
+		page{ 1u },
 		currentPath{ nullptr }
 	{ openRoot(); }
 
 	explicit FileList(wstring pathP) :
 		files{ nullptr },
-		page{ 1ull }
+		page{ 1u }
 	{ openDir(Directory{ pathP }); }
+
+	explicit FileList(Path* pathP) :
+		files{ nullptr },
+		page{ 1u }
+	{ scanPath(pathP); }
 
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 
 	void openRoot();
 	void open(size_t);
+	void openPath(Path*);
 	void openDir(Directory);
+	void scanPath(Path*);
 
 	void printAll() const;
 	void print() const;
@@ -65,13 +72,37 @@ inline void FileList::open(size_t no)
 		return;
 	}
 
-	if (currentPath)
+	this->openPath(files->at(no));
+	/*if (currentPath)
 	{
 		delete currentPath;
 		currentPath = nullptr;
 	}
 	currentPath = new Directory{ files->at(no)->getPath() };
 	vector<wstring> fls = Filesystem{}.getAllFiles(files->at(no)->getPath());
+
+	page = 1u;
+	this->clear();
+
+	files = new vector<Path*>;
+	for (size_t i{ 0 }; i < fls.size(); i++)
+	{
+		if (Filesystem{}.isDir(fls.at(i)))
+			files->push_back(new Directory{ fls.at(i) });
+		else
+			files->push_back(new File{ fls.at(i) });
+	}*/
+}
+
+inline void FileList::openPath(Path* pathP)
+{
+	if (currentPath)
+	{
+		delete currentPath;
+		currentPath = nullptr;
+	}
+	currentPath = new Directory{ pathP->getPath() };
+	vector<wstring> fls = Filesystem{}.getAllFiles(pathP->getPath());
 
 	page = 1u;
 	this->clear();
@@ -109,6 +140,19 @@ inline void FileList::openDir(Directory dir)
 			continue;
 		}
 	}
+}
+
+inline void FileList::scanPath(Path* pathP)
+{
+	if (pathP->isFile())
+	{
+		Filesystem{}.executeFile(pathP->getPath());
+		return;
+	}
+
+	page = 1u;
+	this->clear();
+	files = FilesystemEx{}.findAllFiles(pathP);
 }
 
 inline void FileList::printAll() const

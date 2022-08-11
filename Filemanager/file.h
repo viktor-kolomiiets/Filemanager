@@ -17,10 +17,15 @@ public:
 	virtual wstring getName() const { return Filesystem{}.getFilename(fPath); }
 	virtual wstring getPath() const { return fPath; }
 	virtual wstring getParent() const { return Filesystem{}.getParent(fPath); }
+
 	virtual wstring getSizeStr() const;
 	virtual uintmax_t getSizeByte() const = 0;
+
 	virtual bool isDir() const { return false; }
 	virtual bool isFile() const { return false; }
+
+	virtual void execute() const { return; }
+	virtual void accept(FileInfo&) = 0;
 
 protected:
 	virtual wostream& print(wostream& out) const;
@@ -62,6 +67,7 @@ public:
 	wstring getParent() const override { return L""; }
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
+	void accept(FileInfo&) override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -76,7 +82,9 @@ public:
 	explicit Partition() : Partition{ L"" } {}
 
 	wstring getName() const override;
+	wstring getParent() const override;
 	uintmax_t getSizeByte() const override;
+	void accept(FileInfo&) override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -96,6 +104,7 @@ public:
 
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
+	void accept(FileInfo&) override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -112,6 +121,9 @@ public:
 	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
 	bool isFile() const override { return true; }
 
+	void execute() const override;
+	void accept(FileInfo&) override;
+
 private:
 	wostream& print(wostream& out) const override;
 };
@@ -123,6 +135,11 @@ inline wstring Root::getPath() const
 	wstring pc_name = this->getName();
 	wstring pc_user = Filesystem{}.getUserName();
 	return wstring{ pc_name + L'\\' + pc_user };
+}
+
+inline void Root::accept(FileInfo& fi)
+{
+	fi.setInfoPath(fPath);
 }
 
 inline wostream& Root::print(wostream& out) const
@@ -137,13 +154,23 @@ inline wostream& Root::print(wostream& out) const
 wstring Partition::getName() const
 {
 	Filesystem fs;
-	wstring partChar(this->getParent());
+	wstring partChar(fPath.begin(), fPath.begin() + 2u);
 	return wstring{ fs.getVolumeLabel(fPath) + L" (" + partChar + L')' };
+}
+
+inline wstring Partition::getParent() const
+{
+	return wstring(L"");
 }
 
 inline uintmax_t Partition::getSizeByte() const
 {
 	return Filesystem{}.getVolumeUsed(fPath);
+}
+
+inline void Partition::accept(FileInfo& fi)
+{
+	fi.setInfoPart(fPath);
 }
 
 inline wostream& Partition::print(wostream& out) const
@@ -182,6 +209,11 @@ uintmax_t Directory::getSizeByte() const
 	return Filesystem{}.getDirSize(fPath);
 }
 
+inline void Directory::accept(FileInfo& fi)
+{
+	fi.setInfoDir(fPath);
+}
+
 inline wostream& Directory::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -194,6 +226,16 @@ inline wostream& Directory::print(wostream& out) const
 }
 
 //------------------------------FILE---------------------------------------------------------------
+
+inline void File::execute() const
+{
+	Filesystem{}.executeFile(this->fPath);
+}
+
+inline void File::accept(FileInfo& fi)
+{
+	fi.setInfoFile(fPath);
+}
 
 inline wostream& File::print(wostream& out) const
 {

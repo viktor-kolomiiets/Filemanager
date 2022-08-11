@@ -67,6 +67,9 @@ inline wstring Filesystem::getParent(wstring pathP) const
 		for (size_t i{ 0 }; i < delim; i++)
 			buffer += pathP[i];
 
+	if (pathP.back() == L':')
+		buffer += L'\\';
+
 	return buffer;
 }
 

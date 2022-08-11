@@ -8,6 +8,7 @@ private:
 	Directory current;
 	vector<Directory*>* history{ nullptr };
 	FileList fl;
+
 	Input ui;
 
 public:
@@ -29,13 +30,14 @@ private:
 
 void Window::goLastDir()
 {
-	if (this->history->size() > 0)
+	/*if (this->history->size() > 0)
 	{
 		current = *this->history->back();
 		this->history->pop_back();
 	}
 	
-	this->openDir();
+	this->openDir();*/
+	
 }
 
 inline Window::Window()
@@ -89,6 +91,7 @@ inline void Window::menu()
 			fl.prevPage();
 			break;
 		case PARTITION_BTN:						//select partitions to open
+			fl.openRoot();
 			break;
 		case NEW_FILE_BTN:						//create new file
 			break;
@@ -119,7 +122,7 @@ inline void Window::draw() const
 	wcout << dlmtr << L"\n";
 	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << dlmtr << L"\n";
-
+	
 	fl.print();
 
 	wcout << dlmtr << L"\n";
