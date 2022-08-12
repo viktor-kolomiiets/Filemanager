@@ -72,6 +72,11 @@ int wmain()
 	Window win;
 	win.menu();
 
+	/*FileList fl(L"D:\\Documents");
+	fl.print();
+	fl = FilesystemEx{}.findAllFiles(fl[11]);
+	fl.print();*/
+
 	/*Input ui;
 	Filesystem fs;
 	FileList fl(L"D:\\Documents");

@@ -27,6 +27,7 @@ public:
 		page{ 1u }
 	{ scanPath(pathP); }
 
+	FileList& operator=(vector<Path*>*&& f);
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 
@@ -50,6 +51,18 @@ public:
 private:
 	size_t getMaxPage() const;
 };
+
+inline FileList& FileList::operator=(vector<Path*>*&& f)
+{
+	if (files == f)
+		return *this;
+
+	this->clear();
+	files = f;
+	f = nullptr;
+
+	return *this;
+}
 
 inline void FileList::openRoot()
 {
