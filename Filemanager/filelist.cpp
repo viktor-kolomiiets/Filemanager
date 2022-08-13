@@ -88,7 +88,7 @@ void FileList::print() const
 				continue;
 			}
 
-			wcout << L" " << it << L"\t" << *files->at(it);
+			wcout << L" " << it << L"\t" << *files->at(it);	//crash when open sysdir
 			wcout << L"\n";
 		}
 	}

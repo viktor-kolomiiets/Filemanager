@@ -2,6 +2,14 @@
 
 bool Filesystem::isDir(wstring pathP) const
 {
+	/*try
+	{
+		return is_directory(path{ pathP });
+	}
+	catch (const std::exception&)
+	{
+		return false;
+	}*/
 	error_code ec;
 	return is_directory(path{ pathP }, ec);
 }
@@ -340,7 +348,7 @@ vector<wstring> Filesystem::findFiles(wstring mask, wstring target) const
 
 vector<wstring> Filesystem::getAllFiles(wstring pathP) const
 {
-	vector<wstring> buffer;// = new vector<wstring>;
+	vector<wstring> buffer;
 	for (directory_iterator next(pathP, directory_options::skip_permission_denied), end; next != end; ++next)
 	{
 		try
