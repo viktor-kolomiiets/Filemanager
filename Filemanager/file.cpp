@@ -38,7 +38,6 @@ wstring Root::getPath() const
 vector<Path*>* Root::open() const
 {
 	vector<Path*>* buffer = new vector<Path*>;
-	buffer->push_back(new Root);
 	vector<wstring> p = Filesystem{}.getPartitions();
 	for (size_t i{ 0ull }; i < p.size(); i++)
 		buffer->push_back(new Partition(p.at(i)));
@@ -64,7 +63,7 @@ wstring Partition::getName() const
 
 wstring Partition::getParentName() const
 {
-	return wstring(L"");
+	return Root{}.getPath();
 }
 
 uintmax_t Partition::getSizeByte() const
@@ -75,7 +74,6 @@ uintmax_t Partition::getSizeByte() const
 vector<Path*>* Partition::open() const
 {
 	vector<Path*>* buffer = new vector<Path*>;
-	buffer->push_back(new Root);
 	vector<wstring> fls = Filesystem{}.getAllFiles(fPath);
 	for (size_t i{ 0ull }; i < fls.size(); i++)
 	{
@@ -128,7 +126,6 @@ uintmax_t Directory::getSizeByte() const
 vector<Path*>* Directory::open() const
 {
 	vector<Path*>* buffer = new vector<Path*>;
-	buffer->push_back(new Directory{ this->getParentName() });
 	vector<wstring> fls = Filesystem{}.getAllFiles(fPath);
 	for (size_t i{ 0ull }; i < fls.size(); i++)
 	{

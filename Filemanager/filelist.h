@@ -7,6 +7,7 @@ class FileList
 {
 private:
 	vector<Path*>* files;
+	vector<Path*> history;
 	Path* current;
 	size_t page;
 	const size_t PAGE_SIZE{ 20ull };

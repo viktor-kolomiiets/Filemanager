@@ -25,8 +25,7 @@ void Window::menu()
 			break;
 		case BACK_BTN:							//back to previous folder
 			//this->goLastDir();
-			//fl.openParent();
-			fl.openItem(0ull);
+			fl.openParent();
 			break;
 		case NEXT_BTN:							//display next page
 			fl.nextPage();
@@ -81,7 +80,6 @@ void Window::draw() const
 	wstring dlmtr(97, L'-');
 
 	wcout << dlmtr << L"\n";
-	//wcout << current.getPath() << L"\n";
 	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << dlmtr << L"\n";
 
@@ -99,10 +97,10 @@ size_t Window::selectItem() const
 	size_t maxS = fl.getSize() - 1;
 	for (;;)
 	{
-		wcout << L"Enter No [1 - " << maxS << L"]: ";
+		wcout << L"Enter No [0 - " << maxS << L"]: ";
 		s = ui.getNum();
 
-		if (ui.isValidRange(s, 1ull, maxS))
+		if (ui.isValidRange(s, 0ull, maxS))
 			break;
 	}
 

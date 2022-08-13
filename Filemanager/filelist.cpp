@@ -20,11 +20,10 @@ void FileList::openRoot()
 	vector<wstring> parts = Filesystem{}.getPartitions();
 	for (size_t i{ 0 }; i < parts.size(); i++)
 		files->push_back(new Partition{ parts.at(i) });*/
+
 	*this = Root{}.open();
-	//this->clearCurrent();
-	//current = new Root();
+	history.push_back(new Root);
 	setCurrent(Root{}.getPath());
-	//currentPath = new Root;
 }
 
 void FileList::openPath(wstring pathP)
@@ -57,17 +56,20 @@ void FileList::openItem(size_t no)
 		return;
 	}
 
+	history.push_back(files->at(no));
 	wstring c = files->at(no)->getPath();
 	setCurrent(c);
 	*this = this->files->at(no)->open();
-	//current = new Directory{ c };
 }
 
 void FileList::openParent()
 {
-	setCurrent(current->getParentName());
-	//*this = Directory{ current->getPath() }.open();
-	*this = current->open();
+	if (history.size() > 1ull)
+	{
+		history.pop_back();
+		setCurrent(history.back()->getPath());
+		*this = history.back()->open();
+	}
 }
 
 void FileList::print() const
@@ -77,7 +79,7 @@ void FileList::print() const
 		size_t lsize = files->size();
 		size_t min = (page - 1ull) * PAGE_SIZE;
 
-		for (size_t i{ 0 }; i < PAGE_SIZE; i++)//--------------------------------x
+		for (size_t i{ 0 }; i < PAGE_SIZE; i++)
 		{
 			size_t it = i + min;
 			if (it >= lsize)

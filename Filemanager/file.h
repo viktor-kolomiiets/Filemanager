@@ -33,6 +33,7 @@ public:
 
 	virtual void execute() const { return; }
 
+	virtual Path* getParent() const = 0;
 	virtual vector<Path*>* open() const = 0;
 
 protected:
@@ -52,6 +53,7 @@ public:
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
 
+	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;
 
 private:
@@ -69,6 +71,7 @@ public:
 	wstring getName() const override;
 	wstring getParentName() const override;
 	uintmax_t getSizeByte() const override;
+	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;
 
 private:
@@ -89,6 +92,8 @@ public:
 
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
+
+	Path* getParent() const override { return new Directory{ getParentName() }; }
 	vector<Path*>* open() const override;
 
 private:
@@ -106,6 +111,7 @@ public:
 	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
 	bool isFile() const override { return true; }
 
+	Path* getParent() const override { return new Directory{ getParentName() }; }
 	vector<Path*>* open() const override;
 	void execute() const override;
 
