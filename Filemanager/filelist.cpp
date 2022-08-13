@@ -76,7 +76,7 @@ void FileList::print() const
 		size_t lsize = files->size();
 		size_t min = (page - 1ull) * PAGE_SIZE;
 
-		for (size_t i{ 0 }; i < PAGE_SIZE; i++)
+		for (size_t i{ 1 }; i < PAGE_SIZE; i++)
 		{
 			size_t it = i + min;
 			if (it >= lsize)
