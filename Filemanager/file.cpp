@@ -62,7 +62,7 @@ wstring Partition::getName() const
 	return wstring{ fs.getVolumeLabel(fPath) + L" (" + partChar + L')' };
 }
 
-wstring Partition::getParent() const
+wstring Partition::getParentName() const
 {
 	return wstring(L"");
 }
@@ -128,7 +128,7 @@ uintmax_t Directory::getSizeByte() const
 vector<Path*>* Directory::open() const
 {
 	vector<Path*>* buffer = new vector<Path*>;
-	buffer->push_back(new Directory{ fPath });
+	buffer->push_back(new Directory{ this->getParentName() });
 	vector<wstring> fls = Filesystem{}.getAllFiles(fPath);
 	for (size_t i{ 0ull }; i < fls.size(); i++)
 	{

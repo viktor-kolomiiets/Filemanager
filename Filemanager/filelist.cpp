@@ -65,8 +65,9 @@ void FileList::openItem(size_t no)
 
 void FileList::openParent()
 {
-	setCurrent(current->getParent());
-	*this = Directory{ current->getPath() }.open();
+	setCurrent(current->getParentName());
+	//*this = Directory{ current->getPath() }.open();
+	*this = current->open();
 }
 
 void FileList::print() const
@@ -76,7 +77,7 @@ void FileList::print() const
 		size_t lsize = files->size();
 		size_t min = (page - 1ull) * PAGE_SIZE;
 
-		for (size_t i{ 1 }; i < PAGE_SIZE; i++)
+		for (size_t i{ 0 }; i < PAGE_SIZE; i++)//--------------------------------x
 		{
 			size_t it = i + min;
 			if (it >= lsize)

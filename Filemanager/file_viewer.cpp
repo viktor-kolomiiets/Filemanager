@@ -66,7 +66,7 @@ Window::~Window()
 
 void Window::goLastDir()
 {
-	current = Directory{ current.getParent() };
+	current = Directory{ current.getParentName() };
 	fl.openPath(current.getPath());
 }
 

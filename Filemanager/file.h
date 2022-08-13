@@ -23,7 +23,7 @@ public:
 
 	virtual wstring getName() const { return Filesystem{}.getFilename(fPath); }
 	virtual wstring getPath() const { return fPath; }
-	virtual wstring getParent() const { return Filesystem{}.getParent(fPath); }
+	virtual wstring getParentName() const { return Filesystem{}.getParent(fPath); }
 
 	virtual wstring getSizeStr() const;
 	virtual uintmax_t getSizeByte() const = 0;
@@ -48,7 +48,7 @@ public:
 
 	wstring getName() const override { return Filesystem{}.getCompName(); }
 	wstring getPath() const override;
-	wstring getParent() const override { return L""; }
+	wstring getParentName() const override { return L""; }
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
 
@@ -67,7 +67,7 @@ public:
 	explicit Partition() : Partition{ L"" } {}
 
 	wstring getName() const override;
-	wstring getParent() const override;
+	wstring getParentName() const override;
 	uintmax_t getSizeByte() const override;
 	vector<Path*>* open() const override;
 
