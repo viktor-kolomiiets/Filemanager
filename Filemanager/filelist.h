@@ -16,7 +16,7 @@ public:
 		page{ 1ull }
 	{ /*openRoot();*/ }
 
-	//FileList& operator=(vector<Path*>*&& f);
+	FileList& operator=(vector<Path*>*&& f);
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 

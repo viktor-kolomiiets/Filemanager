@@ -1,5 +1,17 @@
 #include "filelist.h"
 
+FileList& FileList::operator=(vector<Path*>*&& f)
+{
+	if (files == f)
+		return *this;
+
+	this->clear();
+	files = f;
+	f = nullptr;
+
+	return *this;
+}
+
 void FileList::openRoot()
 {
 	this->clear();
