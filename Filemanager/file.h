@@ -33,6 +33,8 @@ public:
 
 	virtual void execute() const { return; }
 
+	virtual vector<Path*>* open() const = 0;
+
 protected:
 	virtual wostream& print(wostream& out) const;
 };
@@ -50,6 +52,8 @@ public:
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
 
+	vector<Path*>* open() const override;
+
 private:
 	wostream& print(wostream& out) const override;
 };
@@ -65,6 +69,7 @@ public:
 	wstring getName() const override;
 	wstring getParent() const override;
 	uintmax_t getSizeByte() const override;
+	vector<Path*>* open() const override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -84,6 +89,7 @@ public:
 
 	uintmax_t getSizeByte() const override;
 	bool isDir() const override { return true; }
+	vector<Path*>* open() const override;
 
 private:
 	wostream& print(wostream& out) const override;
@@ -100,6 +106,7 @@ public:
 	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
 	bool isFile() const override { return true; }
 
+	vector<Path*>* open() const override;
 	void execute() const override;
 
 private:

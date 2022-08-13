@@ -142,7 +142,7 @@ wstring Filesystem::getCompName() const
 void Filesystem::executeFile(wstring pathP) const
 {
 	//CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
-	ShellExecute(NULL, NULL, pathP.c_str(), NULL, NULL, 0);
+	ShellExecute(NULL, NULL, pathP.c_str(), NULL, NULL, SW_RESTORE);
 }
 
 bool Filesystem::createFile(wstring nameP, wstring pathP) const

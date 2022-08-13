@@ -14,19 +14,22 @@ FileList& FileList::operator=(vector<Path*>*&& f)
 
 void FileList::openRoot()
 {
-	this->clear();
+	/*this->clear();
 
 	files = new vector<Path*>;
 	vector<wstring> parts = Filesystem{}.getPartitions();
 	for (size_t i{ 0 }; i < parts.size(); i++)
-		files->push_back(new Partition{ parts.at(i) });
-
+		files->push_back(new Partition{ parts.at(i) });*/
+	*this = Root{}.open();
+	//this->clearCurrent();
+	//current = new Root();
+	setCurrent(Root{}.getPath());
 	//currentPath = new Root;
 }
 
 void FileList::openPath(wstring pathP)
 {
-	if (!Filesystem{}.isDir(pathP))
+	/*if (!Filesystem{}.isDir(pathP))
 	{
 		Filesystem{}.executeFile(pathP);
 		return;
@@ -43,7 +46,27 @@ void FileList::openPath(wstring pathP)
 			files->push_back(new Directory{ f });
 		else
 			files->push_back(new File{ f });
+	}*/
+}
+
+void FileList::openItem(size_t no)
+{
+	if (files->at(no)->isFile())
+	{
+		files->at(no)->execute();
+		return;
 	}
+
+	wstring c = files->at(no)->getPath();
+	setCurrent(c);
+	*this = this->files->at(no)->open();
+	//current = new Directory{ c };
+}
+
+void FileList::openParent()
+{
+	setCurrent(current->getParent());
+	*this = Directory{ current->getPath() }.open();
 }
 
 void FileList::print() const
@@ -89,6 +112,11 @@ size_t FileList::getSize() const
 	return this->files->size();
 }
 
+wstring FileList::getCurrentPathStr() const
+{
+	return current->getPath();
+}
+
 void FileList::clear()
 {
 	page = 1ull;
@@ -99,9 +127,25 @@ void FileList::clear()
 	}
 }
 
+void FileList::clearCurrent()
+{
+	if (current)
+	{
+		delete current;
+		current = nullptr;
+	}
+}
+
+void FileList::setCurrent(wstring pathP)
+{
+	this->clearCurrent();
+	current = new Directory{ pathP };
+}
+
 FileList::~FileList()
 {
 	this->clear();
+	this->clearCurrent();
 }
 
 size_t FileList::getMaxPage() const

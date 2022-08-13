@@ -35,6 +35,16 @@ wstring Root::getPath() const
 	return wstring{ pc_name + L'\\' + pc_user };
 }
 
+vector<Path*>* Root::open() const
+{
+	vector<Path*>* buffer = new vector<Path*>;
+	vector<wstring> p = Filesystem{}.getPartitions();
+	for (size_t i{ 0ull }; i < p.size(); i++)
+		buffer->push_back(new Partition(p.at(i)));
+
+	return buffer;
+}
+
 wostream& Root::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -59,6 +69,22 @@ wstring Partition::getParent() const
 uintmax_t Partition::getSizeByte() const
 {
 	return Filesystem{}.getVolumeUsed(fPath);
+}
+
+vector<Path*>* Partition::open() const
+{
+	vector<Path*>* buffer = new vector<Path*>;
+	vector<wstring> fls = Filesystem{}.getAllFiles(fPath);
+	for (size_t i{ 0ull }; i < fls.size(); i++)
+	{
+		wstring f = fls.at(i);
+		if (Filesystem{}.isDir(f))
+			buffer->push_back(new Directory{ f });
+		else
+			buffer->push_back(new File{ f });
+	}
+
+	return buffer;
 }
 
 wostream& Partition::print(wostream& out) const
@@ -97,6 +123,22 @@ uintmax_t Directory::getSizeByte() const
 	return Filesystem{}.getDirSize(fPath);
 }
 
+vector<Path*>* Directory::open() const
+{
+	vector<Path*>* buffer = new vector<Path*>;
+	vector<wstring> fls = Filesystem{}.getAllFiles(fPath);
+	for (size_t i{ 0ull }; i < fls.size(); i++)
+	{
+		wstring f = fls.at(i);
+		if (Filesystem{}.isDir(f))
+			buffer->push_back(new Directory{ f });
+		else
+			buffer->push_back(new File{ f });
+	}
+
+	return buffer;
+}
+
 wostream& Directory::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
@@ -109,6 +151,11 @@ wostream& Directory::print(wostream& out) const
 }
 
 //------------------------------FILE---------------------------------------------------------------
+
+vector<Path*>* File::open() const
+{
+	return nullptr;
+}
 
 void File::execute() const
 {

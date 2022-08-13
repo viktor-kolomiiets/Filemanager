@@ -20,10 +20,12 @@ void Window::menu()
 		switch (btn)
 		{
 		case OPEN_BTN:							//open file or folder
-			this->openDir();
+			//this->openDir();
+			fl.openItem(selectItem());
 			break;
 		case BACK_BTN:							//back to previous folder
-			this->goLastDir();
+			//this->goLastDir();
+			fl.openParent();
 			break;
 		case NEXT_BTN:							//display next page
 			fl.nextPage();
@@ -79,6 +81,7 @@ void Window::draw() const
 
 	wcout << dlmtr << L"\n";
 	wcout << current.getPath() << L"\n";
+	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << dlmtr << L"\n";
 
 	fl.print();
