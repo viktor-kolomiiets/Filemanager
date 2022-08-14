@@ -1,14 +1,14 @@
 #include "input.h"
 
-bool Input::isKey(wchar_t k) const
-{
-    return k == this->getKey();
-}
+//bool Input::isKey(wchar_t k) const
+//{
+//    return k == this->getKey();
+//}
 
-wchar_t Input::getKey() const
-{
-    return towlower(_getwch_nolock());
-}
+//wchar_t Input::getKey() const
+//{
+//    return towlower(_getwch_nolock());
+//}
 
 wstring Input::getLine() const
 {

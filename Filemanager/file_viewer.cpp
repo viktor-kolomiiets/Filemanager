@@ -1,12 +1,6 @@
 #include "file_viewer.h"
 
-Window::Window()
-{
-	current = Directory{ Root{}.getPath() };
-	fl.openRoot();
-}
-
-void Window::menu()
+void FileViewer::menu()
 {
 	for (;;)
 	{
@@ -20,11 +14,9 @@ void Window::menu()
 		switch (btn)
 		{
 		case OPEN_BTN:							//open file or folder
-			//this->openDir();
 			fl.openItem(selectItem());
 			break;
 		case BACK_BTN:							//back to previous folder
-			//this->goLastDir();
 			fl.openParent();
 			break;
 		case NEXT_BTN:							//display next page
@@ -58,24 +50,7 @@ void Window::menu()
 	}
 }
 
-Window::~Window()
-{
-
-}
-
-void Window::goLastDir()
-{
-	current = Directory{ current.getParentName() };
-	fl.openPath(current.getPath());
-}
-
-void Window::openDir()
-{
-	current = *fl[selectItem()];		//polnoye imya fayla toge prinimayet
-	fl.openPath(current.getPath());
-}
-
-void Window::draw() const
+void FileViewer::draw() const
 {
 	wstring dlmtr(97, L'-');
 
@@ -91,7 +66,7 @@ void Window::draw() const
 	wcout << dlmtr << L"\n";
 }
 
-size_t Window::selectItem() const
+size_t FileViewer::selectItem() const
 {
 	size_t s;
 	size_t maxS = fl.getSize() - 1;

@@ -32,8 +32,8 @@ public:
 	void nextPage();
 	void prevPage();
 
-	size_t getSize() const;
-	wstring getCurrentPathStr() const;
+	size_t getSize() const { return this->files->size(); }
+	wstring getCurrentPathStr() const { return current->getPath(); }
 
 	void clear();
 

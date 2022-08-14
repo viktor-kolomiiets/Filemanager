@@ -10,8 +10,8 @@ class Input
 public:
 	Input() = default;
 
-	bool isKey(wchar_t) const;
-	wchar_t getKey() const;
+	bool isKey(wchar_t k) const { return k == this->getKey(); }
+	wchar_t getKey() const { return towlower(_getwch_nolock()); }
 	wstring getLine() const;
 	size_t getNum() const;
 

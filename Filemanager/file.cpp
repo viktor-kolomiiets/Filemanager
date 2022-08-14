@@ -61,15 +61,15 @@ wstring Partition::getName() const
 	return wstring{ fs.getVolumeLabel(fPath) + L" (" + partChar + L')' };
 }
 
-wstring Partition::getParentName() const
-{
-	return Root{}.getPath();
-}
+//wstring Partition::getParentName() const
+//{
+//	return Root{}.getPath();
+//}
 
-uintmax_t Partition::getSizeByte() const
-{
-	return Filesystem{}.getVolumeUsed(fPath);
-}
+//uintmax_t Partition::getSizeByte() const
+//{
+//	return Filesystem{}.getVolumeUsed(fPath);
+//}
 
 vector<Path*>* Partition::open() const
 {
@@ -118,10 +118,10 @@ Directory& Directory::operator=(const Path& p)
 	return *this;
 }
 
-uintmax_t Directory::getSizeByte() const
-{
-	return Filesystem{}.getDirSize(fPath);
-}
+//uintmax_t Directory::getSizeByte() const
+//{
+//	return Filesystem{}.getDirSize(fPath);
+//}
 
 vector<Path*>* Directory::open() const
 {
@@ -152,15 +152,15 @@ wostream& Directory::print(wostream& out) const
 
 //------------------------------FILE---------------------------------------------------------------
 
-vector<Path*>* File::open() const
-{
-	return nullptr;
-}
+//vector<Path*>* File::open() const
+//{
+//	return nullptr;
+//}
 
-void File::execute() const
-{
-	Filesystem{}.executeFile(this->fPath);
-}
+//void File::execute() const
+//{
+//	Filesystem{}.executeFile(this->fPath);
+//}
 
 wostream& File::print(wostream& out) const
 {

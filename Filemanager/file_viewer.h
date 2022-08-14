@@ -17,23 +17,20 @@
 #define PREV_BTN L' '
 #define PARTITION_BTN L'p'
 
-class Window
+class FileViewer
 {
 private:
-	Directory current;
 	FileList fl;
 	Input ui;
 
 public:
-	Window();
+	FileViewer() { fl.openRoot(); }
 
 	void menu();
 
-	~Window();
+	~FileViewer() { fl.clear(); }
 
 private:
-	void goLastDir();
-	void openDir();
 	void draw() const;
 
 	size_t selectItem() const;

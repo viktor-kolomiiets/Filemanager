@@ -69,8 +69,8 @@ public:
 	explicit Partition() : Partition{ L"" } {}
 
 	wstring getName() const override;
-	wstring getParentName() const override;
-	uintmax_t getSizeByte() const override;
+	wstring getParentName() const override { return Root{}.getPath(); }
+	uintmax_t getSizeByte() const override { return Filesystem{}.getVolumeUsed(fPath); }
 	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;
 
@@ -90,7 +90,7 @@ public:
 	Directory& operator=(const Partition& part);
 	Directory& operator=(const Path& p);
 
-	uintmax_t getSizeByte() const override;
+	uintmax_t getSizeByte() const override { return Filesystem{}.getDirSize(fPath); }
 	bool isDir() const override { return true; }
 
 	Path* getParent() const override { return new Directory{ getParentName() }; }
@@ -112,8 +112,8 @@ public:
 	bool isFile() const override { return true; }
 
 	Path* getParent() const override { return new Directory{ getParentName() }; }
-	vector<Path*>* open() const override;
-	void execute() const override;
+	vector<Path*>* open() const override { return nullptr; }
+	void execute() const override { Filesystem{}.executeFile(this->fPath); }
 
 private:
 	wostream& print(wostream& out) const override;

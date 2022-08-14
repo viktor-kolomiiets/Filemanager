@@ -41,33 +41,33 @@ int wmain()
 	//space - prev page
 	//p - change partition
 
-	//Window win;
+	//FileViewer win;
 	//win.menu();
 
 	//filesystem.h
-	wcout << Filesystem{}.getCompName() << L"\n";
-	wcout << Filesystem{}.getUserName() << L"\n";
-	wcout << Filesystem{}.getFSName(L"D:\\") << L"\n";
+	//wcout << Filesystem{}.getCompName() << L"\n";
+	//wcout << Filesystem{}.getUserName() << L"\n";
+	//wcout << Filesystem{}.getFSName(L"D:\\") << L"\n";
 
 	//file.h
-	wcout << File{ L"D:\\Documents\\p7INiq7Bhng.jpg" }.getPath() << L"\n";
+	//wcout << File{ L"D:\\Documents\\p7INiq7Bhng.jpg" }.getPath() << L"\n";
 	//File{ L"D:\\Documents\\p7INiq7Bhng.jpg" }.execute();
 
 	//filelist.h
-	FileList fl;
-	fl.openRoot();
-	fl.print();
-	fl.openPath(L"D:\\Documents");
-	fl.print();
-	fl.nextPage();
-	fl.print();
+	//FileList fl;
+	//fl.openRoot();
+	//fl.print();
+	//fl.openPath(L"D:\\Documents");
+	//fl.print();
+	//fl.nextPage();
+	//fl.print();
 
 	//input.h
-	wcout << Input{}.isValidName(L"name") << L"\n";
-	wcout << Input{}.isValidRange(3ull, 0ull, 5ull) << L"\n";
+	//wcout << Input{}.isValidName(L"name") << L"\n";
+	//wcout << Input{}.isValidRange(3ull, 0ull, 5ull) << L"\n";
 
 	//file_viewer.h
-	Window w;
+	FileViewer w;
 	w.menu();
 
 

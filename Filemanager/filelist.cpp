@@ -110,15 +110,15 @@ void FileList::prevPage()
 		page--;
 }
 
-size_t FileList::getSize() const
-{
-	return this->files->size();
-}
+//size_t FileList::getSize() const
+//{
+//	return this->files->size();
+//}
 
-wstring FileList::getCurrentPathStr() const
-{
-	return current->getPath();
-}
+//wstring FileList::getCurrentPathStr() const
+//{
+//	return current->getPath();
+//}
 
 void FileList::clear()
 {
