@@ -6,7 +6,7 @@ wstring Path::getSizeStr() const
 {
 	const short int SIZE = 5;
 	wstring vals[SIZE]{ L" bytes", L" KiB", L" MiB", L" GiB", L" TiB" };
-	uintmax_t fsize = getSizeByte();
+	uintmax_t fsize = this->getSizeByte();
 
 	short int i = 0;
 	for (; i < SIZE; i++)

@@ -55,7 +55,14 @@ wstring Filesystem::getFilename(wstring pathP) const
 
 uintmax_t Filesystem::getFileSize(wstring pathP) const
 {
-	return file_size(pathP);
+	try
+	{
+		return file_size(pathP);
+	}
+	catch (const std::exception&)
+	{
+		return 0ull;
+	}
 }
 
 uintmax_t Filesystem::getDirSize(wstring pathP) const
