@@ -88,7 +88,7 @@ void FileList::print() const
 				continue;
 			}
 
-			wcout << L" " << it << L"\t" << *files->at(it);	//crash when open sysdir
+			wcout << L" " << it << L"\t" << *files->at(it);
 			wcout << L"\n";
 		}
 	}
@@ -157,7 +157,7 @@ size_t FileList::getMaxPage() const
 
 	if (files)
 	{
-		size_t s = this->files->size();
+		size_t s = this->files->size() - 1ull;
 		size_t fullSize = s + (PAGE_SIZE - (s % PAGE_SIZE));
 		maxPage = fullSize / PAGE_SIZE;
 	}
