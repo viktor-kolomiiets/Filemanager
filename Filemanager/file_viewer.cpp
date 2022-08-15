@@ -4,7 +4,6 @@ void FileViewer::menu()
 {
 	for (;;)
 	{
-		system("cls");
 		this->draw();
 
 		wchar_t btn = ui.getKey();
@@ -60,6 +59,7 @@ void FileViewer::menu()
 
 void FileViewer::draw() const
 {
+	system("cls");
 	wstring dlmtr(97, L'-');
 
 	wcout << dlmtr << L"\n";
@@ -74,20 +74,95 @@ void FileViewer::draw() const
 	wcout << dlmtr << L"\n";
 }
 
-void FileViewer::newFileOption() const
+void FileViewer::newFileOption()
 {
+	wstring dest = fl.getCurrentPathStr();
+	wstring file;
+	for (;;)
+	{
+		wcout << L"Enter name: ";
+		file = ui.getLine();
+		if (ui.isValidName(file))
+			break;
+		else
+			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+	}
+
+	bool r = Filesystem{}.createFile(file, dest);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Created file: " << file << L"\nPress any key...";
+		ui.getKey();
+	}
 }
 
-void FileViewer::newFolderOption() const
+void FileViewer::newFolderOption()
 {
+	wstring dest = fl.getCurrentPathStr();
+	wstring folder;
+	for (;;)
+	{
+		wcout << L"Enter name: ";
+		folder = ui.getLine();
+		if (ui.isValidName(folder))
+			break;
+		else
+			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+	}
+
+	bool r = Filesystem{}.createDir(folder, dest);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Created folder: [" << folder << L"]\nPress any key...";
+		ui.getKey();
+	}
 }
 
-void FileViewer::deleteFileOption() const
+void FileViewer::deleteFileOption()
 {
+	wcout << L"Select File/Folder: ";
+	wstring del = fl[selectItem()]->getPath();
+	bool r = Filesystem{}.deleteFile(del);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Deleted " << del << L"\nPress any key...";
+		ui.getKey();
+	}
 }
 
-void FileViewer::renameFileOption() const
+void FileViewer::renameFileOption()
 {
+	wcout << L"Select File/Folder: ";
+	wstring ren = fl[selectItem()]->getPath();
+	wstring n;
+	for (;;)
+	{
+		wcout << L"Enter new name: ";
+		n = ui.getLine();
+		if (ui.isValidName(n))
+			break;
+		else
+			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+	}
+	
+	bool r = Filesystem{}.renameFile(ren, n);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Renamed " << ren << L"\nPress any key...";
+		ui.getKey();
+	}
 }
 
 void FileViewer::copyFileOption()
@@ -97,31 +172,35 @@ void FileViewer::copyFileOption()
 
 	OpenDialog od;
 	wstring to = od.selectDirectory();
-	/*for (;;)
-	{
-		wcout << to << L"\n";
-		if (Input{}.isKey(L'x'))
-			break;
-	}*/
-	bool c = Filesystem{}.copyFile(from, to);
+	
+	bool r = Filesystem{}.copyFile(from, to);
 	fl.updateList();
 	draw();
 
-	if (c)
+	if (r)
 	{
 		wcout << L"Copied " << from << L" to " << to << L"\nPress any key...";
 		ui.getKey();
-		/*for (;;)
-		{
-			wcout << L"Copied " << from << L" to " << to << L"\nx. back";
-			if (Input{}.isKey(L'x'))
-				break;
-		}*/
 	}
 }
 
-void FileViewer::moveFileOption() const
+void FileViewer::moveFileOption()
 {
+	wcout << L"Select File/Folder to move: ";
+	wstring from = fl[selectItem()]->getPath();
+
+	OpenDialog od;
+	wstring to = od.selectDirectory();
+	
+	bool r = Filesystem{}.moveFile(from, to);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Moved " << from << L" to " << to << L"\nPress any key...";
+		ui.getKey();
+	}
 }
 
 void FileViewer::infoFileOption() const
@@ -172,7 +251,6 @@ void OpenDialog::menu()
 {
 	for (;;)
 	{
-		system("cls");
 		this->draw();
 
 		wchar_t btn = ui.getKey();
@@ -222,25 +300,24 @@ void OpenDialog::menu()
 wstring OpenDialog::selectDirectory()
 {
 	this->menu();
-	system("cls");
 	return selection;
 }
 
 void OpenDialog::draw() const
 {
+	system("cls");
 	wstring dlmtr(97, L'-');
 
 	wcout << dlmtr << L"\n";
 	wcout << fl.getCurrentPathStr() << L"\n";
-	wcout << dlmtr << L"\n";
+	wcout << L"-----------------------------Select destination directory [s]------------------------------------\n";
 
 	fl.print();
 
 	wcout << dlmtr << L"\n";
-	wcout << L"o. open | s. select folder |           |         | i. info | p. change partition\n";
-	wcout << L"q. back | n. create folder |           |         |         | 0. Cancel\n";
+	wcout << L"o. open | s. select folder | i. info | p. change partition\n";
+	wcout << L"q. back | n. create folder |         | 0. Cancel\n";
 	wcout << dlmtr << L"\n";
-	wcout << L"Select destination directory [s]: ";
 }
 
 void OpenDialog::open()

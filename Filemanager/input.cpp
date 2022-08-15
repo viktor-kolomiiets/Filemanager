@@ -1,15 +1,5 @@
 #include "input.h"
 
-//bool Input::isKey(wchar_t k) const
-//{
-//    return k == this->getKey();
-//}
-
-//wchar_t Input::getKey() const
-//{
-//    return towlower(_getwch_nolock());
-//}
-
 wstring Input::getLine() const
 {
     wstring buffer{ L"" };
@@ -40,7 +30,7 @@ bool Input::isValidRange(size_t val, size_t min, size_t max) const
 bool Input::isValidName(wstring str) const
 {
     size_t pos = str.find_first_of(L"\\/:*?\'\"<>|");
-    if (pos != wstring::npos)
+    if (pos == wstring::npos)
         return true;
 
     return false;

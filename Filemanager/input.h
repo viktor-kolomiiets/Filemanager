@@ -15,6 +15,6 @@ public:
 	wstring getLine() const;
 	size_t getNum() const;
 
-	bool isValidRange(size_t, size_t, size_t) const;
-	bool isValidName(wstring) const;
+	bool isValidRange(size_t val, size_t min, size_t max) const;
+	bool isValidName(wstring str) const;
 };

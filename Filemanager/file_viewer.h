@@ -66,12 +66,12 @@ public:
 private:
 	void draw() const override;
 
-	void newFileOption() const;
-	void newFolderOption() const;
-	void deleteFileOption() const;
-	void renameFileOption() const;
+	void newFileOption();
+	void newFolderOption();
+	void deleteFileOption();
+	void renameFileOption();
 	void copyFileOption();
-	void moveFileOption() const;
+	void moveFileOption();
 	void infoFileOption() const;
 	void findFileOption() const;
 
