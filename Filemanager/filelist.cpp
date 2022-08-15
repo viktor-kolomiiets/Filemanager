@@ -12,6 +12,18 @@ FileList& FileList::operator=(vector<Path*>*&& f)
 	return *this;
 }
 
+FileList& FileList::operator=(vector<Path*>*& f)
+{
+	if (files == f)
+		return *this;
+
+	this->clear();
+	files = f;
+	f = nullptr;
+
+	return *this;
+}
+
 void FileList::openRoot()
 {
 	*this = Root{}.open();
@@ -46,6 +58,11 @@ void FileList::openParent()
 void FileList::updateList()
 {
 	*this = history.back()->open();
+}
+
+void FileList::addLastDir(wstring pathP)
+{
+	history.push_back(new Directory{ pathP });
 }
 
 void FileList::print() const

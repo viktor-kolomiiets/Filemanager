@@ -207,25 +207,21 @@ void FileViewer::infoFileOption() const
 {
 }
 
-void FileViewer::findFileOption() const
+void FileViewer::findFileOption()
 {
-}
+	wstring target = fl.getCurrentPathStr();
+	wcout << L"Search for: ";
+	wstring mask = ui.getLine();
 
-//size_t FileViewer::selectItem() const
-//{
-//	size_t s;
-//	size_t maxS = fl.getSize() - 1;
-//	for (;;)
-//	{
-//		wcout << L"Enter No [0 - " << maxS << L"]: ";
-//		s = ui.getNum();
-//
-//		if (ui.isValidRange(s, 0ull, maxS))
-//			break;
-//	}
-//
-//	return s;
-//}
+	vector<wstring> search = Filesystem{}.findFiles(mask, target);
+	vector<Path*>* sfiles = new vector<Path*>;
+
+	for (size_t i{ 0ull }; i < search.size(); i++)
+		sfiles->push_back(new File{ search.at(i) });
+
+	fl = sfiles;
+	fl.addLastDir(target);
+}
 
 //------------------------------VIEWER-------------------------------------------------------------
 

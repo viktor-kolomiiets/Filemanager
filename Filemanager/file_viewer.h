@@ -73,7 +73,7 @@ private:
 	void copyFileOption();
 	void moveFileOption();
 	void infoFileOption() const;
-	void findFileOption() const;
+	void findFileOption();
 
 	//size_t selectItem() const;
 };

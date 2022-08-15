@@ -20,6 +20,7 @@ public:
 	{ /*openRoot();*/ }
 
 	FileList& operator=(vector<Path*>*&& f);
+	FileList& operator=(vector<Path*>*& f);
 	Path* operator[](size_t index) const { return files->at(index); }
 	Path*& operator[](size_t index) { return files->at(index); }
 
@@ -27,6 +28,8 @@ public:
 	void openItem(size_t no);
 	void openParent();
 	void updateList();
+
+	void addLastDir(wstring pathP);
 
 	void print() const;
 	void nextPage();
