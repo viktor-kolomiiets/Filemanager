@@ -16,38 +16,64 @@
 #define NEXT_BTN L'\t'
 #define PREV_BTN L' '
 #define PARTITION_BTN L'p'
+#define SELECT_BTN L's'
 
 class Viewer
 {
 protected:
 	FileList fl;
 	Input ui;
+
+public:
+	Viewer() = default;
+	virtual void menu() = 0;
+	virtual ~Viewer() {}
+
+protected:
+	virtual void draw() const = 0;
+	size_t selectItem() const;
 };
 
-class FileViewer
+class OpenDialog : public Viewer
 {
 private:
-	FileList fl;
-	Input ui;
+	wstring selection;
+
+public:
+	OpenDialog() { fl.openRoot(); }
+	void menu() override;
+	wstring selectDirectory();
+	~OpenDialog() { fl.clear(); }
+
+private:
+	void draw() const override;
+	void open();
+};
+
+class FileViewer : public Viewer
+{
+//private:
+//	FileList fl;
+//	Input ui;
 
 public:
 	FileViewer() { fl.openRoot(); }
 
-	void menu();
+	void menu() override;
 
 	~FileViewer() { fl.clear(); }
 
 private:
-	void draw() const;
+	void draw() const override;
 
 	void newFileOption() const;
 	void newFolderOption() const;
 	void deleteFileOption() const;
 	void renameFileOption() const;
-	void copyFileOption() const;
+	void copyFileOption();
 	void moveFileOption() const;
 	void infoFileOption() const;
 	void findFileOption() const;
 
-	size_t selectItem() const;
+	//size_t selectItem() const;
 };

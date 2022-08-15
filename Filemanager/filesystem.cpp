@@ -223,6 +223,7 @@ bool Filesystem::copyFile(wstring from, wstring to) const
 			create_directory(to);
 		}
 		copy(path{ from }, path{ to }, copy_options::recursive);
+		return true;
 	}
 	catch (const std::exception&)
 	{
