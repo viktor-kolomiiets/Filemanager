@@ -17,6 +17,13 @@
 #define PREV_BTN L' '
 #define PARTITION_BTN L'p'
 
+class Viewer
+{
+protected:
+	FileList fl;
+	Input ui;
+};
+
 class FileViewer
 {
 private:
@@ -32,6 +39,15 @@ public:
 
 private:
 	void draw() const;
+
+	void newFileOption() const;
+	void newFolderOption() const;
+	void deleteFileOption() const;
+	void renameFileOption() const;
+	void copyFileOption() const;
+	void moveFileOption() const;
+	void infoFileOption() const;
+	void findFileOption() const;
 
 	size_t selectItem() const;
 };

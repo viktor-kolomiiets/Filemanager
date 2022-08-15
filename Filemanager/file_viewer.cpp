@@ -29,20 +29,28 @@ void FileViewer::menu()
 			fl.openRoot();
 			break;
 		case NEW_FILE_BTN:						//create new file
+			newFileOption();
 			break;
 		case NEW_FOLDER_BTN:					//create new folder
+			newFolderOption();
 			break;
 		case DELETE_BTN:						//delete file/folder
+			deleteFileOption();
 			break;
 		case RENAME_BTN:						//rename file/folder
+			renameFileOption();
 			break;
 		case COPY_BTN:							//copy file/folder
+			copyFileOption();
 			break;
 		case MOVE_BTN:							//move to another directory file/folder
+			moveFileOption();
 			break;
 		case INFO_BTN:							//display information about foder
+			infoFileOption();
 			break;
 		case FIND_BTN:							//find file(s)
+			findFileOption();
 			break;
 		default:
 			break;
@@ -64,6 +72,38 @@ void FileViewer::draw() const
 	wcout << L"o. open | a. create file   | x. delete | c. copy | i. info | p. change partition\n";
 	wcout << L"q. back | n. create folder | r. rename | m. move | f. find | 0. Exit\n";
 	wcout << dlmtr << L"\n";
+}
+
+void FileViewer::newFileOption() const
+{
+}
+
+void FileViewer::newFolderOption() const
+{
+}
+
+void FileViewer::deleteFileOption() const
+{
+}
+
+void FileViewer::renameFileOption() const
+{
+}
+
+void FileViewer::copyFileOption() const
+{
+}
+
+void FileViewer::moveFileOption() const
+{
+}
+
+void FileViewer::infoFileOption() const
+{
+}
+
+void FileViewer::findFileOption() const
+{
 }
 
 size_t FileViewer::selectItem() const

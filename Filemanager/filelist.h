@@ -24,9 +24,9 @@ public:
 	Path*& operator[](size_t index) { return files->at(index); }
 
 	void openRoot();
-	void openPath(wstring);
 	void openItem(size_t no);
 	void openParent();
+	void updateList();
 
 	void print() const;
 	void nextPage();
