@@ -205,6 +205,15 @@ void FileViewer::moveFileOption()
 
 void FileViewer::infoFileOption() const
 {
+	Path* file = fl[selectItem()];
+
+	wcout << L"Full Path: " << file->getPath() << L"\n";
+	wcout << L"File Name: " << file->getName() << L"\n";
+	wcout << L"Size     : " << file->getSizeStr() << L"\n";
+
+	wcout << L"Press any key...";
+	ui.getKey();
+	file = nullptr;
 }
 
 void FileViewer::findFileOption()
