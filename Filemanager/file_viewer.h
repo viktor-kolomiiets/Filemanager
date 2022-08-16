@@ -32,6 +32,8 @@ public:
 protected:
 	virtual void draw() const = 0;
 	size_t selectItem() const;
+	void newFolderOption();
+	void infoFileOption() const;
 };
 
 class OpenDialog : public Viewer
@@ -67,12 +69,10 @@ private:
 	void draw() const override;
 
 	void newFileOption();
-	void newFolderOption();
 	void deleteFileOption();
 	void renameFileOption();
 	void copyFileOption();
 	void moveFileOption();
-	void infoFileOption() const;
 	void findFileOption();
 
 	//size_t selectItem() const;

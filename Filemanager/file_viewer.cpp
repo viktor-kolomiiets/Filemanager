@@ -99,30 +99,30 @@ void FileViewer::newFileOption()
 	}
 }
 
-void FileViewer::newFolderOption()
-{
-	wstring dest = fl.getCurrentPathStr();
-	wstring folder;
-	for (;;)
-	{
-		wcout << L"Enter name: ";
-		folder = ui.getLine();
-		if (ui.isValidName(folder))
-			break;
-		else
-			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
-	}
-
-	bool r = Filesystem{}.createDir(folder, dest);
-	fl.updateList();
-	draw();
-
-	if (r)
-	{
-		wcout << L"Created folder: [" << folder << L"]\nPress any key...";
-		ui.getKey();
-	}
-}
+//void FileViewer::newFolderOption()
+//{
+//	wstring dest = fl.getCurrentPathStr();
+//	wstring folder;
+//	for (;;)
+//	{
+//		wcout << L"Enter name: ";
+//		folder = ui.getLine();
+//		if (ui.isValidName(folder))
+//			break;
+//		else
+//			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+//	}
+//
+//	bool r = Filesystem{}.createDir(folder, dest);
+//	fl.updateList();
+//	draw();
+//
+//	if (r)
+//	{
+//		wcout << L"Created folder: [" << folder << L"]\nPress any key...";
+//		ui.getKey();
+//	}
+//}
 
 void FileViewer::deleteFileOption()
 {
@@ -160,7 +160,7 @@ void FileViewer::renameFileOption()
 
 	if (r)
 	{
-		wcout << L"Renamed " << ren << L"\nPress any key...";
+		wcout << L"Renamed " << ren << L" to " << n << L"\nPress any key...";
 		ui.getKey();
 	}
 }
@@ -203,19 +203,6 @@ void FileViewer::moveFileOption()
 	}
 }
 
-void FileViewer::infoFileOption() const
-{
-	Path* file = fl[selectItem()];
-
-	wcout << L"Full Path: " << file->getPath() << L"\n";
-	wcout << L"File Name: " << file->getName() << L"\n";
-	wcout << L"Size     : " << file->getSizeStr() << L"\n";
-
-	wcout << L"Press any key...";
-	ui.getKey();
-	file = nullptr;
-}
-
 void FileViewer::findFileOption()
 {
 	wstring target = fl.getCurrentPathStr();
@@ -250,6 +237,44 @@ size_t Viewer::selectItem() const
 	return s;
 }
 
+void Viewer::newFolderOption()
+{
+	wstring dest = fl.getCurrentPathStr();
+	wstring folder;
+	for (;;)
+	{
+		wcout << L"Enter name: ";
+		folder = ui.getLine();
+		if (ui.isValidName(folder))
+			break;
+		else
+			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+	}
+
+	bool r = Filesystem{}.createDir(folder, dest);
+	fl.updateList();
+	draw();
+
+	if (r)
+	{
+		wcout << L"Created folder: [" << folder << L"]\nPress any key...";
+		ui.getKey();
+	}
+}
+
+void Viewer::infoFileOption() const
+{
+	Path* file = fl[selectItem()];
+
+	wcout << L"Full Path: " << file->getPath() << L"\n";
+	wcout << L"File Name: " << file->getName() << L"\n";
+	wcout << L"Size     : " << file->getSizeStr() << L"\n";
+
+	wcout << L"Press any key...";
+	ui.getKey();
+	file = nullptr;
+}
+
 //------------------------------OPEN_DIALOG--------------------------------------------------------
 
 void OpenDialog::menu()
@@ -261,22 +286,11 @@ void OpenDialog::menu()
 		wchar_t btn = ui.getKey();
 		if (btn == L'0')
 			break;
-		if (btn == SELECT_BTN)
-		{
-			selection = fl[selectItem()]->getPath();
-			if (!Filesystem{}.isDir(selection))
-			{
-				wcout << L"Can\'t select file. Press any key...\n";
-				ui.getKey();
-				continue;
-			}
-			break;
-		}
 
 		switch (btn)
 		{
 		case OPEN_BTN:							//open file or folder
-			open();
+			fl.openItem(selectItem());
 			break;
 		case BACK_BTN:							//back to previous folder
 			fl.openParent();
@@ -287,14 +301,23 @@ void OpenDialog::menu()
 		case PREV_BTN:							//display previous page
 			fl.prevPage();
 			break;
+		case SELECT_BTN:
+			selection = fl[selectItem()]->getPath();
+			if (!Filesystem{}.isDir(selection))
+			{
+				wcout << L"Can\'t select file. Press any key...\n";
+				ui.getKey();
+				continue;
+			}
+			return;
 		case PARTITION_BTN:						//select partitions to open
 			fl.openRoot();
 			break;
 		case NEW_FOLDER_BTN:					//create new folder
-			//newFolderOption();
+			newFolderOption();
 			break;
 		case INFO_BTN:							//display information about foder
-			//infoFileOption();
+			infoFileOption();
 			break;
 		default:
 			break;
