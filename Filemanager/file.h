@@ -50,6 +50,7 @@ public:
 	wstring getName() const override { return Filesystem{}.getCompName(); }
 	wstring getPath() const override;
 	wstring getParentName() const override { return L""; }
+
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
 
@@ -70,6 +71,7 @@ public:
 
 	wstring getName() const override;
 	wstring getParentName() const override { return Root{}.getPath(); }
+
 	uintmax_t getSizeByte() const override { return Filesystem{}.getVolumeUsed(fPath); }
 	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;

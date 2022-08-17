@@ -5,6 +5,12 @@
 
 #define OPEN_BTN L'o'
 #define BACK_BTN L'q'
+#define SELECT_BTN L's'
+#define EXIT_BTN L'0'
+
+#define NEXT_BTN L'\t'
+#define PREV_BTN L' '
+
 #define NEW_FILE_BTN L'a'
 #define NEW_FOLDER_BTN L'n'
 #define DELETE_BTN L'x'
@@ -13,10 +19,7 @@
 #define MOVE_BTN L'm'
 #define INFO_BTN L'i'
 #define FIND_BTN L'f'
-#define NEXT_BTN L'\t'
-#define PREV_BTN L' '
 #define PARTITION_BTN L'p'
-#define SELECT_BTN L's'
 
 class Viewer
 {
@@ -74,6 +77,4 @@ private:
 	void copyFileOption();
 	void moveFileOption();
 	void findFileOption();
-
-	//size_t selectItem() const;
 };

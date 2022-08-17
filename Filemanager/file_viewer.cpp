@@ -7,11 +7,11 @@ void FileViewer::menu()
 		this->draw();
 
 		wchar_t btn = ui.getKey();
-		if (btn == L'0')
-			break;
 
 		switch (btn)
 		{
+		case EXIT_BTN:
+			return;
 		case OPEN_BTN:							//open file or folder
 			fl.openItem(selectItem());
 			break;
@@ -98,31 +98,6 @@ void FileViewer::newFileOption()
 		ui.getKey();
 	}
 }
-
-//void FileViewer::newFolderOption()
-//{
-//	wstring dest = fl.getCurrentPathStr();
-//	wstring folder;
-//	for (;;)
-//	{
-//		wcout << L"Enter name: ";
-//		folder = ui.getLine();
-//		if (ui.isValidName(folder))
-//			break;
-//		else
-//			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
-//	}
-//
-//	bool r = Filesystem{}.createDir(folder, dest);
-//	fl.updateList();
-//	draw();
-//
-//	if (r)
-//	{
-//		wcout << L"Created folder: [" << folder << L"]\nPress any key...";
-//		ui.getKey();
-//	}
-//}
 
 void FileViewer::deleteFileOption()
 {
