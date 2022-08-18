@@ -52,20 +52,13 @@ public:
 
 private:
 	void draw() const override;
-	void open();
 };
 
 class FileViewer : public Viewer
 {
-//private:
-//	FileList fl;
-//	Input ui;
-
 public:
 	FileViewer() { fl.openRoot(); }
-
 	void menu() override;
-
 	~FileViewer() { fl.clear(); }
 
 private:

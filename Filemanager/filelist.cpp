@@ -26,9 +26,8 @@ FileList& FileList::operator=(vector<Path*>*& f)
 
 void FileList::openRoot()
 {
-	*this = Root{}.open();
 	history.push_back(new Root);
-	current = Root{}.getPath();
+	updateList();
 }
 
 void FileList::openItem(size_t no)
@@ -40,8 +39,7 @@ void FileList::openItem(size_t no)
 	}
 
 	history.push_back(files->at(no));
-	current = files->at(no)->getPath();
-	*this = this->files->at(no)->open();
+	updateList();
 }
 
 void FileList::openParent()
@@ -49,14 +47,14 @@ void FileList::openParent()
 	if (history.size() > 1ull)
 	{
 		history.pop_back();
-		current = history.back()->getPath();
-		*this = history.back()->open();
+		updateList();
 	}
 }
 
 void FileList::updateList()
 {
 	*this = history.back()->open();
+	current = history.back()->getPath();
 }
 
 void FileList::addLastDir(wstring pathP)

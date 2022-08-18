@@ -67,17 +67,17 @@ void FileViewer::menu()
 void FileViewer::draw() const
 {
 	system("cls");
-	wstring dlmtr(97, L'-');
+	wstring dlmtr(105, L'-');
 
-	wcout << dlmtr << L"\n";
+	wcout << dlmtr << L"\n ";
 	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << dlmtr << L"\n";
 
 	fl.print();
 
 	wcout << dlmtr << L"\n";
-	wcout << L"o. open | a. create file   | x. delete | c. copy to | i. info | p. change partition\n";
-	wcout << L"q. back | n. create folder | r. rename | m. move to | f. find | 0. Exit\n";
+	wcout << L" o. open | a. create file   | x. delete | c. copy to | i. info | p. change partition\n";
+	wcout << L" q. back | n. create folder | r. rename | m. move to | f. find | 0. Exit\n";
 	wcout << dlmtr << L"\n";
 }
 
@@ -258,13 +258,12 @@ void OpenDialog::menu()
 	for (;;)
 	{
 		this->draw();
-
 		wchar_t btn = ui.getKey();
-		if (btn == L'0')
-			break;
 
 		switch (btn)
 		{
+		case EXIT_BTN:
+			return;
 		case OPEN_BTN:							//open file or folder
 			fl.openItem(selectItem());
 			break;
@@ -311,21 +310,16 @@ wstring OpenDialog::selectDirectory()
 void OpenDialog::draw() const
 {
 	system("cls");
-	wstring dlmtr(97, L'-');
+	wstring dlmtr(105, L'-');
 
-	wcout << dlmtr << L"\n";
+	wcout << dlmtr << L"\n ";
 	wcout << fl.getCurrentPathStr() << L"\n";
 	wcout << L"-----------------------------Select destination directory [s]------------------------------------\n";
 
 	fl.print();
 
 	wcout << dlmtr << L"\n";
-	wcout << L"o. open | s. select folder | i. info | p. change partition\n";
-	wcout << L"q. back | n. create folder |         | 0. Cancel\n";
+	wcout << L" o. open | s. select folder | i. info | p. change partition\n";
+	wcout << L" q. back | n. create folder |         | 0. Cancel\n";
 	wcout << dlmtr << L"\n";
-}
-
-void OpenDialog::open()
-{
-	fl.openItem(selectItem());
 }
