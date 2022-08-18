@@ -102,6 +102,13 @@ void FileList::prevPage()
 		page--;
 }
 
+bool FileList::isRoot() const
+{
+	if (current == Root{}.getPath())
+		return true;
+	return false;
+}
+
 void FileList::clear()
 {
 	page = 1ull;

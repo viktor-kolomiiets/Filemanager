@@ -7,6 +7,7 @@ void FileViewer::menu()
 		this->draw();
 
 		wchar_t btn = ui.getKey();
+		bool root = fl.isRoot();
 
 		switch (btn)
 		{
@@ -28,22 +29,28 @@ void FileViewer::menu()
 			fl.openRoot();
 			break;
 		case NEW_FILE_BTN:						//create new file
-			newFileOption();
+			if (!root)
+				newFileOption();
 			break;
 		case NEW_FOLDER_BTN:					//create new folder
-			newFolderOption();
+			if (!root)
+				newFolderOption();
 			break;
 		case DELETE_BTN:						//delete file/folder
-			deleteFileOption();
+			if (!root)
+				deleteFileOption();
 			break;
 		case RENAME_BTN:						//rename file/folder
-			renameFileOption();
+			if (!root)
+				renameFileOption();
 			break;
 		case COPY_BTN:							//copy file/folder
-			copyFileOption();
+			if (!root)
+				copyFileOption();
 			break;
 		case MOVE_BTN:							//move to another directory file/folder
-			moveFileOption();
+			if (!root)
+				moveFileOption();
 			break;
 		case INFO_BTN:							//display information about foder
 			infoFileOption();
@@ -239,16 +246,9 @@ void Viewer::newFolderOption()
 
 void Viewer::infoFileOption() const
 {
-	/*Path* file = fl[selectItem()];
-
-	wcout << L"Full Path: " << file->getPath() << L"\n";
-	wcout << L"File Name: " << file->getName() << L"\n";
-	wcout << L"Size     : " << file->getSizeStr() << L"\n";*/
-
 	fl[selectItem()]->displayInfo();
 	wcout << L"Press any key...";
 	ui.getKey();
-	//file = nullptr;
 }
 
 //------------------------------OPEN_DIALOG--------------------------------------------------------
@@ -290,7 +290,8 @@ void OpenDialog::menu()
 			fl.openRoot();
 			break;
 		case NEW_FOLDER_BTN:					//create new folder
-			newFolderOption();
+			if (!fl.isRoot())
+				newFolderOption();
 			break;
 		case INFO_BTN:							//display information about foder
 			infoFileOption();

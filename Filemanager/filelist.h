@@ -37,6 +37,7 @@ public:
 
 	size_t getSize() const { return this->files->size(); }
 	wstring getCurrentPathStr() const { return current; }
+	bool isRoot() const;
 
 	void clear();
 
