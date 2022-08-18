@@ -8,16 +8,16 @@ class FileList
 private:
 	vector<Path*>* files;
 	vector<Path*> history;
-	Path* current;
+	wstring current;
 	size_t page;
 	const size_t PAGE_SIZE{ 20ull };
 
 public:
 	explicit FileList() :
 		files{ nullptr },
-		current{ nullptr },
+		current{ L"" },
 		page{ 1ull }
-	{ /*openRoot();*/ }
+	{ }
 
 	FileList& operator=(vector<Path*>*&& f);
 	FileList& operator=(vector<Path*>*& f);
@@ -36,14 +36,12 @@ public:
 	void prevPage();
 
 	size_t getSize() const { return this->files->size(); }
-	wstring getCurrentPathStr() const { return current->getPath(); }
+	wstring getCurrentPathStr() const { return current; }
 
 	void clear();
 
-	~FileList();
+	~FileList() { this->clear(); }
 
 private:
 	size_t getMaxPage() const;
-	void clearCurrent();
-	void setCurrent(wstring pathP);
 };

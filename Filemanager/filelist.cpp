@@ -28,7 +28,7 @@ void FileList::openRoot()
 {
 	*this = Root{}.open();
 	history.push_back(new Root);
-	setCurrent(Root{}.getPath());
+	current = Root{}.getPath();
 }
 
 void FileList::openItem(size_t no)
@@ -40,8 +40,7 @@ void FileList::openItem(size_t no)
 	}
 
 	history.push_back(files->at(no));
-	wstring c = files->at(no)->getPath();
-	setCurrent(c);
+	current = files->at(no)->getPath();
 	*this = this->files->at(no)->open();
 }
 
@@ -50,7 +49,7 @@ void FileList::openParent()
 	if (history.size() > 1ull)
 	{
 		history.pop_back();
-		setCurrent(history.back()->getPath());
+		current = history.back()->getPath();
 		*this = history.back()->open();
 	}
 }
@@ -111,27 +110,6 @@ void FileList::clear()
 		delete files;
 		files = nullptr;
 	}
-}
-
-void FileList::clearCurrent()
-{
-	if (current)
-	{
-		delete current;
-		current = nullptr;
-	}
-}
-
-void FileList::setCurrent(wstring pathP)
-{
-	this->clearCurrent();
-	current = new Directory{ pathP };
-}
-
-FileList::~FileList()
-{
-	this->clear();
-	this->clearCurrent();
 }
 
 size_t FileList::getMaxPage() const

@@ -57,19 +57,16 @@ wostream& Root::print(wostream& out) const
 wstring Partition::getName() const
 {
 	Filesystem fs;
-	wstring partChar(fPath.begin(), fPath.begin() + 2u);
-	return wstring{ fs.getVolumeLabel(fPath) + L" (" + partChar + L')' };
+	return wstring{ fs.getVolumeLabel(fPath) };
 }
 
-//wstring Partition::getParentName() const
-//{
-//	return Root{}.getPath();
-//}
-
-//uintmax_t Partition::getSizeByte() const
-//{
-//	return Filesystem{}.getVolumeUsed(fPath);
-//}
+void Partition::displayInfo() const
+{
+	wcout << L"Partition Label: " << getName() << L"\n";
+	wcout << L"Partition Root : " << getPath() << L"\n";
+	wcout << L"Total Used     : " << getSizeStr() << L"\n";
+	wcout << L"File System    : " << Filesystem{}.getFSName(fPath) << L"\n";
+}
 
 vector<Path*>* Partition::open() const
 {
@@ -90,11 +87,14 @@ vector<Path*>* Partition::open() const
 wostream& Partition::print(wostream& out) const
 {
 	HANDLE hConsole = GetStdHandle(STD_OUTPUT_HANDLE);
+	wstring partChar(fPath.begin(), fPath.begin() + 2u);
+
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DIRECTORY_CLR));
 	out << this->getSizeStr();
 	out.width(4);
-	out << L"\t[" << this->getName() << L"]";
+	out << L"\t[" << this->getName() + L" (" + partChar + L')' << L"]";
 	SetConsoleTextAttribute(hConsole, (WORD)((0 << 4) | DEFAULT_CLR));
+
 	return out;
 }
 
@@ -118,10 +118,12 @@ Directory& Directory::operator=(const Path& p)
 	return *this;
 }
 
-//uintmax_t Directory::getSizeByte() const
-//{
-//	return Filesystem{}.getDirSize(fPath);
-//}
+void Directory::displayInfo() const
+{
+	wcout << L"Directory Name: " << getName() << L"\n";
+	wcout << L"Full Path     : " << getPath() << L"\n";
+	wcout << L"Directory Size: " << getSizeStr() << L"\n";
+}
 
 vector<Path*>* Directory::open() const
 {
@@ -152,15 +154,12 @@ wostream& Directory::print(wostream& out) const
 
 //------------------------------FILE---------------------------------------------------------------
 
-//vector<Path*>* File::open() const
-//{
-//	return nullptr;
-//}
-
-//void File::execute() const
-//{
-//	Filesystem{}.executeFile(this->fPath);
-//}
+void File::displayInfo() const
+{
+	wcout << L"File Name: " << getName() << L"\n";
+	wcout << L"Full Path: " << getPath() << L"\n";
+	wcout << L"File Size: " << getSizeStr() << L"\n";
+}
 
 wostream& File::print(wostream& out) const
 {

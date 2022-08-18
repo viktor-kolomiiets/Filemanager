@@ -27,6 +27,7 @@ public:
 
 	virtual wstring getSizeStr() const;
 	virtual uintmax_t getSizeByte() const = 0;
+	virtual void displayInfo() const = 0;
 
 	virtual bool isDir() const { return false; }
 	virtual bool isFile() const { return false; }
@@ -53,6 +54,7 @@ public:
 
 	wstring getSizeStr() const override { return L""; }
 	uintmax_t getSizeByte() const override { return 0ull; }
+	void displayInfo() const override { return; }
 
 	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;
@@ -73,6 +75,8 @@ public:
 	wstring getParentName() const override { return Root{}.getPath(); }
 
 	uintmax_t getSizeByte() const override { return Filesystem{}.getVolumeUsed(fPath); }
+	void displayInfo() const override;
+
 	Path* getParent() const override { return new Root; }
 	vector<Path*>* open() const override;
 
@@ -93,6 +97,7 @@ public:
 	Directory& operator=(const Path& p);
 
 	uintmax_t getSizeByte() const override { return Filesystem{}.getDirSize(fPath); }
+	void displayInfo() const override;
 	bool isDir() const override { return true; }
 
 	Path* getParent() const override { return new Directory{ getParentName() }; }
@@ -111,6 +116,7 @@ public:
 	explicit File() : File{ L"" } {}
 
 	uintmax_t getSizeByte() const override { return Filesystem{}.getFileSize(fPath); }
+	void displayInfo() const override;
 	bool isFile() const override { return true; }
 
 	Path* getParent() const override { return new Directory{ getParentName() }; }
