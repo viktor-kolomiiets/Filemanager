@@ -104,6 +104,7 @@ wstring Filesystem::getVolumeLabel(wstring pathP) const
 
 	if (gvi)
 		return wstring{ label };
+	
 	return L"";
 }
 
@@ -193,11 +194,18 @@ bool Filesystem::createDir(wstring nameP, wstring pathP) const
 {
 	wstring fpath{ pathP + L'\\' + nameP };
 
-	//if parent path of new directory is exist
-	if (this->isExist(pathP))
+	try
 	{
-		create_directory(path{ fpath });
-		return true;
+		//if parent path of new directory is exist
+		if (this->isExist(pathP))
+		{
+			create_directory(path{ fpath });
+			return true;
+		}
+	}
+	catch (const std::exception&)
+	{
+		return false;
 	}
 
 	return false;

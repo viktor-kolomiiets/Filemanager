@@ -26,6 +26,5 @@ int wmain()
 	FileViewer fv;
 	fv.menu();
 
-
 	return 0;
 }
