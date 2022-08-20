@@ -222,6 +222,7 @@ bool Filesystem::copyFile(wstring from, wstring to) const
 			to += L"\\" + name;
 			create_directory(to);
 		}
+		
 		copy(path{ from }, path{ to }, copy_options::recursive);
 		return true;
 	}
@@ -240,7 +241,7 @@ bool Filesystem::renameFile(wstring old, wstring newName) const
 
 	try
 	{
-		if (this->isExist(old))
+		if (this->isExist(old) && !this->isExist(newFile))
 		{
 			rename(path{ old }, path{ newFile });
 			return true;

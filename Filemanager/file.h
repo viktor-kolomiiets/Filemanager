@@ -5,7 +5,7 @@
 
 #define FILE_CLR 14
 #define DIRECTORY_CLR 2
-constexpr auto DEFAULT_CLR = 15;
+constexpr auto DEFAULT_CLR = 7;
 
 class Path
 {

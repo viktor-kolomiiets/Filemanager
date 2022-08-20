@@ -67,6 +67,7 @@ void FileViewer::menu()
 void FileViewer::draw() const
 {
 	system("cls");
+	system("color 07");
 	wstring dlmtr(105, L'-');
 
 	wcout << dlmtr << L"\n ";
@@ -74,7 +75,7 @@ void FileViewer::draw() const
 	wcout << dlmtr << L"\n";
 
 	fl.print();
-
+	
 	wcout << dlmtr << L"\n";
 	wcout << L" o. open | a. create file   | x. delete | c. copy to | i. info | p. change partition\n";
 	wcout << L" q. back | n. create folder | r. rename | m. move to | f. find | 0. Exit\n";
