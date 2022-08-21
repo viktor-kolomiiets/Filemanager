@@ -96,6 +96,13 @@ void FileViewer::newFileOption()
 			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
 	}
 
+	if (Filesystem{}.isExist(dest + L'\\' + file + L".txt"))
+	{
+		wcout << L"Such file is already exist\n";
+		ui.getKey();
+		return;
+	}
+
 	bool r = Filesystem{}.createFile(file, dest);
 	fl.updateList();
 	draw();
@@ -232,6 +239,13 @@ void Viewer::newFolderOption()
 			break;
 		else
 			wcout << L"Name can\'t contain \\/:*?\'\"<>| symbols\n";
+	}
+
+	if (Filesystem{}.isExist(dest + L'\\' + folder))
+	{
+		wcout << folder << L" is already exist\n";
+		ui.getKey();
+		return;
 	}
 
 	bool r = Filesystem{}.createDir(folder, dest);
